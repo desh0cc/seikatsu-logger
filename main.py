@@ -7,7 +7,10 @@ record_duration = timedelta()
 
 CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
-    "folder_path": None  
+    "folder_path": "/logs",
+    "color": "1",
+    "AI": "",
+    "prompt": ""
 }
 
 def save_config(config_data):
@@ -82,8 +85,6 @@ def main(page: ft.Page):
             page.add(home())
         elif page_name == "write_page":
             page.add(write_page())
-        elif page_name == "record_page":
-            page.add(record_page())
         elif page_name == "chart_page":
             page.add(chart_page())
         elif page_name == "settings_page":
@@ -202,7 +203,7 @@ def main(page: ft.Page):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="src/icons/magic-wand-auto-fix-button.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="src/icons/chat.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                     )
                                 ],
@@ -225,14 +226,14 @@ def main(page: ft.Page):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="src/icons/button.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="src/icons/editing.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                         on_click=lambda e: show_page("record_page")
                                     ),
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="src/icons/chart.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="src/icons/button.png", color=get_time_based_color(), width=32, height=32),
                                         on_click=lambda e: show_page("chart_page"),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
                                     )
@@ -249,6 +250,12 @@ def main(page: ft.Page):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
+                                        content=ft.Image(src="src/icons/chart.png", color=get_time_based_color(), width=32, height=32),
+                                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
+                                    ),
+                                    ft.ElevatedButton(
+                                        height=100,
+                                        width=100,
                                         content=ft.Image(src="src/icons/neuron.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
                                     ),
@@ -256,12 +263,6 @@ def main(page: ft.Page):
                                         height=100,
                                         width=100,
                                         content=ft.Image(src="src/icons/folder.png", color=get_time_based_color(), width=32, height=32),
-                                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
-                                    ),
-                                    ft.ElevatedButton(
-                                        height=100,
-                                        width=100,
-                                        content=ft.Icon(ft.icons.EXIT_TO_APP), color=get_time_based_color(),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                         on_click=lambda e: quit(ft.app)
                                     )
@@ -273,16 +274,23 @@ def main(page: ft.Page):
                     ]),
                     alignment=ft.alignment.center
                 )
-
-
-
-
             ]),
             padding=ft.padding.all(0), 
             margin=ft.margin.all(0)
         ))
     
+    
     def write_page():
+
+
+        def create_page(content):
+            return ft.Container(
+                content=ft.Container(content),
+                alignment=ft.alignment.center,
+                expand=True,
+            )
+        
+
         def handle_date_change(e):
             selected_date.value = f"Вибрана дата: {e.control.value.strftime('%Y-%m-%d')}"
             selected_date.data = e.control.value
@@ -294,193 +302,138 @@ def main(page: ft.Page):
             page.update()
 
         def handle_start_time_change(e):
-            start_time.value = f"Вибраний час: {e.control.value.strftime('%H:%M')}"
+            start_time.value = f"Вибраний час: {e.control.value.strftime('%H:%M:%S')}"
             start_time.data = e.control.value
             page.update()
 
         def handle_end_time_change(e):
-            end_time.value = f"Вибраний час: {e.control.value.strftime('%H:%M')}"
+            end_time.value = f"Вибраний час: {e.control.value.strftime('%H:%M:%S')}"
             end_time.data = e.control.value
             page.update()
 
-        def save_activity():
+        def json_load(file):
             try:
-                # Перевірка на заповнення всіх полів
-                if not all([selected_date.data, start_time.data, end_time.data, activity_input.data]):
-                    page.open(
-                        ft.SnackBar(content=ft.Text("Будь ласка, заповніть всі поля"), bgcolor=ft.colors.ERROR)
-                    )
-                    return
-
-                # Форматування дати та отримання шляху до файлу
-                file_date = selected_date.data.strftime('%Y-%m-%d')
-                
-                
-                # Об'єднання дати і часу
-                start_datetime = datetime.combine(selected_date.data, start_time.data)
-                end_datetime = datetime.combine(selected_date.data, end_time.data)
-                duration = end_datetime - start_datetime
-                file_path = os.path.join(folder_path, f"{file_date}.json")
-
-                # Створення папки, якщо її немає
-                if not os.path.exists(folder_path):
-                    os.makedirs(folder_path)
-
-                # Завантаження даних з файлу або створення нового словника
-                data = {}
-                if os.path.exists(file_path):
-                    try:
-                        with open(file_path, "r", encoding="utf-8") as f:
-                            data = json.load(f)
-                    except json.decoder.JSONDecodeError:
-                        data = {}
-
-                # Додавання нової активності
-                data[activity_input.data] = {
-                    "start_time": start_time.data.strftime('%H:%M:S'),
-                    "end_time": end_time.data.strftime('%H:%M:%S'),
-                    "duration": str(duration)
-                }
-
-                # Збереження оновлених даних у файлі
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    json.dump(data, f, ensure_ascii=False, indent=4)
-
-                # Повідомлення про успішне збереження
-                page.open(
-                    ft.SnackBar(content=ft.Text("Активність успішно збережено"), bgcolor=ft.colors.GREEN)
-                )
-
-                # Очищення полів
-                activity_input.value = ""
-                selected_date.value = ""
-                start_time.value = ""
-                end_time.value = ""
-                selected_date.data = None
-                start_time.data = None
-                end_time.data = None
-                page.update()
-
+                with open(file, "r") as f:
+                    data = json.load(f)
+                return data
             except Exception as e:
-                page.open(
-                    ft.SnackBar(content=ft.Text(f"Помилка: {str(e)}"), bgcolor=ft.colors.ERROR)
-                )
+                print(e)
+
+        def save_activity(date,event,start_time,end_time,duration=None):
+            folder_path
+            data = json_load(date)
+
 
         selected_date = ft.Text("")
         start_time = ft.Text("")
         end_time = ft.Text("")
         activity_input = ft.Text("")
-
-
-        return ft.Column([
-            ft.Container(
-                content=ft.IconButton(
-                    icon=ft.icons.ARROW_BACK,
-                    icon_color=get_time_based_color(),
-                    on_click=lambda e: show_page("home")
+        
+        note_page = create_page(ft.Column([
+                ft.Container(
+                    content=ft.IconButton(
+                        icon=ft.icons.ARROW_BACK,
+                        icon_color=get_time_based_color(),
+                        on_click=lambda e: show_page("home")
+                    ),
+                    alignment=ft.alignment.top_left,
+                    padding=ft.padding.only(left=10)
                 ),
-                alignment=ft.alignment.top_left,
-                padding=ft.padding.only(left=10)
-            ),
-            
-            ft.Container(
-                content=ft.Text(
-                    "Додати лог",
-                    color=get_time_based_color(),
-                    font_family="Helvetica",
-                    weight=ft.FontWeight.BOLD,
-                    size=20
+                
+                ft.Container(
+                    content=ft.Text(
+                        "Додати лог",
+                        color=get_time_based_color(),
+                        font_family="Helvetica",
+                        weight=ft.FontWeight.BOLD,
+                        size=20
+                    ),
+                    alignment=ft.alignment.top_center,
+                    padding=ft.padding.only(top=-45)
                 ),
-                alignment=ft.alignment.top_center,
-                padding=ft.padding.only(top=-45)
-            ),
 
-            # Секція вибору дати
-            ft.Container(
-                content=ft.Column([
-                    ft.Container(ft.Text("Виберіть дату:", size=16),alignment=ft.alignment.center),
-                    ft.Container(ft.ElevatedButton(
-                        text="Відкрити календар", color=get_time_based_color(),
-                        icon=ft.icons.CALENDAR_MONTH,
-                        icon_color=get_time_based_color(),
-                        on_click=lambda e: page.open(
-                            ft.DatePicker(
-                                on_change=handle_date_change,
-                            )
-                        ),
-                    ),alignment=ft.alignment.center),
-                    selected_date
-                ])
-            ),
+                # Секція вибору дати
+                ft.Container(
+                    content=ft.Column([
+                        ft.Container(ft.Text("Виберіть дату:", size=16),alignment=ft.alignment.center),
+                        ft.Container(ft.ElevatedButton(
+                            text="Відкрити календар", color=get_time_based_color(),
+                            icon=ft.icons.CALENDAR_MONTH,
+                            icon_color=get_time_based_color(),
+                            on_click=lambda e: page.open(
+                                ft.DatePicker(
+                                    on_change=handle_date_change,
+                                )
+                            ),
+                        ),alignment=ft.alignment.center),
+                        selected_date
+                    ])
+                ),
 
-            # Секція вибору активності
-            ft.Container(
-                content=ft.Column([
-                    ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
-                    ft.Container(ft.TextField(
-                        width=200,
-                        text_align=ft.TextAlign.LEFT,
-                        label="Активність",
-                        hint_text="Введіть назву активності",
-                        color=ft.colors.WHITE,
-                        border_color=get_time_based_color(),
-                        label_style=ft.TextStyle(color=get_time_based_color()),
-                        on_change=handle_activity_change
-                    ), alignment=ft.alignment.center),
-                    activity_input
-                ])
-            ),
+                # Секція вибору активності
+                ft.Container(
+                    content=ft.Column([
+                        ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
+                        ft.Container(ft.TextField(
+                            width=200,
+                            text_align=ft.TextAlign.LEFT,
+                            label="Активність",
+                            hint_text="Введіть назву активності",
+                            color=ft.colors.WHITE,
+                            border_color=get_time_based_color(),
+                            label_style=ft.TextStyle(color=get_time_based_color()),
+                            on_change=handle_activity_change
+                        ), alignment=ft.alignment.center),
+                        activity_input
+                    ])
+                ),
 
-            # Секція вибору часу
-            ft.Container(
-                content=ft.Column([
-                    ft.Container(ft.Text("Вкажіть час початку:", size=16), alignment=ft.alignment.center),
-                    ft.Container(ft.ElevatedButton(
-                        text="Вибрати час",color=get_time_based_color(),
-                        icon=ft.icons.ACCESS_TIME,
-                        icon_color=get_time_based_color(),
-                        on_click=lambda e: page.open(
-                            ft.TimePicker(
-                                on_change=handle_start_time_change,
-                            )
-                        ),
-                    ),alignment=ft.alignment.center),
-                    start_time,
-                ]),
-                alignment=ft.alignment.center,
-                padding=ft.padding.only(top=20)
-            ),
+                # Секція вибору часу
+                ft.Container(
+                    content=ft.Column([
+                        ft.Container(ft.Text("Вкажіть час початку:", size=16), alignment=ft.alignment.center),
+                        ft.Container(ft.ElevatedButton(
+                            text="Вибрати час",color=get_time_based_color(),
+                            icon=ft.icons.ACCESS_TIME,
+                            icon_color=get_time_based_color(),
+                            on_click=lambda e: page.open(
+                                ft.TimePicker(
+                                    on_change=handle_start_time_change,
+                                )
+                            ),
+                        ),alignment=ft.alignment.center),
+                        start_time,
+                    ]),
+                    alignment=ft.alignment.center,
+                    padding=ft.padding.only(top=20)
+                ),
 
-            ft.Container(
-                content=ft.Column([
-                    ft.Container(ft.Text("Вкажіть час закінчення:", size=16), alignment=ft.alignment.center),
-                    ft.Container(ft.ElevatedButton(
-                        text="Вибрати час",color=get_time_based_color(),
-                        icon=ft.icons.ACCESS_TIME,
-                        icon_color=get_time_based_color(),
-                        on_click=lambda e: page.open(
-                            ft.TimePicker(
-                                on_change=handle_end_time_change,
-                            )
-                        ),
-                    ),alignment=ft.alignment.center),
-                    end_time,
-                ])
-            ),
+                ft.Container(
+                    content=ft.Column([
+                        ft.Container(ft.Text("Вкажіть час закінчення:", size=16), alignment=ft.alignment.center),
+                        ft.Container(ft.ElevatedButton(
+                            text="Вибрати час",color=get_time_based_color(),
+                            icon=ft.icons.ACCESS_TIME,
+                            icon_color=get_time_based_color(),
+                            on_click=lambda e: page.open(
+                                ft.TimePicker(
+                                    on_change=handle_end_time_change,
+                                )
+                            ),
+                        ),alignment=ft.alignment.center),
+                        end_time,
+                    ])
+                ),
 
-            ft.Container(
-                content=ft.ElevatedButton(text="Додати",color=get_time_based_color(),on_click=lambda _: save_activity()),
-                alignment=ft.alignment.center
-            )
-        ])
-
-    def record_page():
+                ft.Container(
+                    content=ft.ElevatedButton(text="Додати",color=get_time_based_color(),on_click=lambda _: save_activity(selected_date,start_time,end_time,activity_input)),
+                    alignment=ft.alignment.center
+                )
+            ])
+        )
 
         start_value = "0:00:00"
         record_label = ft.Text(value="0:00:00",size=30,font_family="Helvetica", weight=ft.FontWeight.BOLD)
-
-        stop_recording_flag = False
-        
 
         activity_input = ft.Text("")
 
@@ -518,112 +471,135 @@ def main(page: ft.Page):
             activity_input.data = e.control.value
             page.update()
 
-        def write_down(event, start_time, end_time, total_time):
-            try:
-                with open(f"{todaysDate}.json", "r", encoding="utf-8") as f:
-                    data = json.load(f)
-            except (FileNotFoundError, json.decoder.JSONDecodeError):
-                data = {}
 
-            file_path = os.path.join(folder_path, f"{todaysDate}.json")
-            start_time_str = start_time.strftime('%H:%M:%S') if start_time else "Not recorded"
-            end_time_str = end_time.strftime('%H:%M:%S') if end_time else "Not recorded"
-
-            data[event] = {
-                "start_time": start_time_str,
-                "end_time": end_time_str,
-                "duration": str(total_time)
-            }
-
-            try:
-                with open(file_path, "w", encoding="utf-8") as f:
-                    json.dump(data, f, indent=4,ensure_ascii=False)
-                    page.open(ft.SnackBar(ft.Text(f"Успішно занесено у {todaysDate}.json!"), bgcolor=ft.colors.GREEN_ACCENT))
-            except Exception as e:
-                print(f"Error writing to file: {e}")
-                page.open(ft.SnackBar(ft.Text("Виникла проблема"), bgcolor=ft.colors.RED_ACCENT))
-
-
-
-
-        return ft.Column([
-            ft.Container(
-                content=ft.IconButton(
-                    icon=ft.icons.ARROW_BACK,
-                    icon_color=get_time_based_color(),
-                    on_click=lambda e: show_page("home")
+        record_page = create_page(ft.Column([
+                ft.Container(
+                    content=ft.IconButton(
+                        icon=ft.icons.ARROW_BACK,
+                        icon_color=get_time_based_color(),
+                        on_click=lambda e: show_page("home")
+                    ),
+                    alignment=ft.alignment.top_left,
+                    padding=ft.padding.only(left=10),
                 ),
-                alignment=ft.alignment.top_left,
-                padding=ft.padding.only(left=10),
-            ),
-            ft.Container(
-                content=ft.Text(
-                    "Записати лог",
-                    color=get_time_based_color(),
-                    font_family="Helvetica",
-                    weight=ft.FontWeight.BOLD,
-                    size=20
+                ft.Container(
+                    content=ft.Text(
+                        "Записати лог",
+                        color=get_time_based_color(),
+                        font_family="Helvetica",
+                        weight=ft.FontWeight.BOLD,
+                        size=20
+                    ),
+                    alignment=ft.alignment.top_center,
+                    padding=ft.padding.only(top=-45)
                 ),
-                alignment=ft.alignment.top_center,
-                padding=ft.padding.only(top=-45)
-            ),
 
-            ft.Container(
-                content=record_label,
-                alignment=ft.alignment.top_center
-            ),
-            ft.Container(
-                content=ft.ElevatedButton(
-                    text="Почати запис",
-                    color=ft.colors.GREEN_ACCENT,
-                    icon=ft.icons.PLAY_CIRCLE,
-                    on_click=lambda e: start_recording()
-                )
-            ),
+                ft.Container(
+                    content=ft.Column([
+                        ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
+                        ft.Container(ft.TextField(
+                            width=200,
+                            text_align=ft.TextAlign.LEFT,
+                            label="Активність",
+                            hint_text="Введіть назву активності",
+                            color=ft.colors.WHITE,
+                            border_color=get_time_based_color(),
+                            label_style=ft.TextStyle(color=get_time_based_color()),
+                            on_change=on_change_activity
+                        ), alignment=ft.alignment.center),
+                        activity_input
+                    ])
+                ),
 
-            ft.Container(
-                content=ft.ElevatedButton(
-                    text="Призупинити",
-                    color=ft.colors.YELLOW_ACCENT,
-                    icon=ft.icons.STOP_CIRCLE,
-                    on_click=lambda e: stop_recording()
-                )
-            ),
-            ft.Container(
-                content=ft.ElevatedButton(
-                    text="Видалити",
-                    color=ft.colors.RED_ACCENT,
-                    icon=ft.icons.GPP_MAYBE_ROUNDED,
-                    on_click=lambda e: delete_recording()
-                )
-            ),
+                ft.Container(
+                    content=record_label,
+                    alignment=ft.alignment.top_center
+                ),
 
-            ft.Container(
-                content=ft.Column([
-                    ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
-                    ft.Container(ft.TextField(
-                        width=200,
-                        text_align=ft.TextAlign.LEFT,
-                        label="Активність",
-                        hint_text="Введіть назву активності",
-                        color=ft.colors.WHITE,
-                        border_color=get_time_based_color(),
-                        label_style=ft.TextStyle(color=get_time_based_color()),
-                        on_change=on_change_activity
-                    ), alignment=ft.alignment.center),
-                    activity_input
+                ft.Row([
+                    ft.Container(
+                        content=ft.IconButton(
+                            icon_color=ft.colors.GREEN_ACCENT,
+                            icon=ft.icons.PLAY_CIRCLE,
+                            width=45,
+                            height=45,
+                            on_click=lambda e: start_recording()
+                        )
+                    ),
+
+                    ft.Container(
+                        content=ft.IconButton(
+                            icon_color=ft.colors.YELLOW_ACCENT,
+                            icon=ft.icons.STOP_CIRCLE,
+                            width=45,
+                            height=45,
+                            on_click=lambda e: stop_recording()
+                        )
+                    ),
+                    ft.Container(
+                        content=ft.IconButton(
+                            icon_color=ft.colors.RED_ACCENT,
+                            icon=ft.icons.GPP_MAYBE_ROUNDED,
+                            width=45,
+                            height=45,
+                            on_click=lambda e: delete_recording()
+                        )
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER
+                ),
+
+                ft.Container(
+                        content=ft.ElevatedButton(text="Додати",color=get_time_based_color(),on_click=lambda e: save_activity(todaysDate, start_time, end_time, activity_input)),
+                        alignment=ft.alignment.center
+                    )
                 ])
-            ),
-
-            ft.Container(
-                ft.ElevatedButton(
-                    "Занести",
-                    on_click=lambda e: write_down(activity_input.data, start_time, end_time, record_duration)
-                )
             )
+        edit_page = create_page(ft.Text("Член"))
 
+        pages = [note_page,record_page, edit_page]
 
-        ])
+        stack = ft.Stack(
+            [
+                note_page,
+                record_page,
+                edit_page
+            ],
+            expand=True,
+        )
+        
+        # Функция для переключения видимости страниц
+        def switch_page(index):
+            for i, p in enumerate(pages):
+                p.visible = i == index
+            page.update()
+        
+        # Изначально отображаем первую страницу
+        switch_page(0)
+
+        # NavigationBar для выбора страниц
+        nav_bar = ft.Container(
+            ft.NavigationBar(
+                destinations=[
+                    ft.NavigationBarDestination("Додати", icon=ft.icons.ADD),
+                    ft.NavigationBarDestination("Записати", icon=ft.icons.RECORD_VOICE_OVER),
+                    ft.NavigationBarDestination("Редагувати", icon=ft.icons.CHANGE_CIRCLE),
+                ],
+                indicator_color=get_time_based_color(),
+                on_change=lambda e: switch_page(e.control.selected_index),
+                adaptive=True,
+            ),
+            alignment=ft.alignment.bottom_center,
+            padding=ft.padding.only(left=-20, right=-20,bottom=-10),
+        )
+
+        return ft.Column(
+            [
+            stack,
+            nav_bar
+            ],
+            expand=True
+        )
     
 
     def chart_page():
@@ -794,4 +770,7 @@ def main(page: ft.Page):
     show_page("home")
 
 if __name__ == "__main__":
-    ft.app(main)
+    ft.app(
+        target=main,
+        assets_dir="assets"
+    )
