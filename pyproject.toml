@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "simpleloggingunit"
+version = "0.1.0"
+description = "Instrument for logging activity, self analyzing powered with AI"
+authors = ["desh0cc"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+[tool.poetry.group.dev.dependencies]
+flet = "^0.24.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
