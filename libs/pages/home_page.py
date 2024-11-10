@@ -118,7 +118,7 @@ class HomePage(ft.UserControl):
                                         width=100,
                                         content=ft.Image(src="assets/icons/copy-writing.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                                        on_click=lambda e: show_page("write_page", self.page)
+                                        on_click=lambda e: show_page("base_page", self.page)
                                     ),
                                     ft.ElevatedButton(
                                         height=100,

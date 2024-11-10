@@ -1,12 +1,12 @@
 import flet as ft, json, os
 from datetime import datetime
 
-from libs.pages.note_page import WritePage
+from libs.pages.write_page import WritePage
 from libs.pages.home_page import HomePage
 from libs.pages.settings_page import SettingsPage
 from libs.pages.chart_page import ChartPage
 from libs.pages.record_page import RecordPage
-
+from libs.pages.base_page import BasePage
 
 # DATE
 
@@ -57,15 +57,19 @@ def get_time_based_color():
         
 # PAGE SETTINGS
 
-def show_page(page_name, page: ft.Page, on_nav_change=None):
+def show_page(page_name, page: ft.Page):
     page.controls.clear()
 
     if page_name == "home":
         page.add(HomePage(page))
+    elif page_name == "base_page":
+        base_page = BasePage(page)
+        page.add(base_page)
+        page.update()
     elif page_name == "write_page":
-        page.add(WritePage(page, on_nav_change))
+        page.add(WritePage(page))
     elif page_name == "record_page":
-        page.add(RecordPage(page, on_nav_change))
+        page.add(RecordPage(page))
     elif page_name == "chart_page":
         page.add(ChartPage(page))
     elif page_name == "settings_page":

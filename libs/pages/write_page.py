@@ -6,12 +6,9 @@ class WritePage(ft.UserControl):
         super().__init__()
         self.page = page
 
-       
-
     def build(self):
         from utils import get_time_based_color, show_page, folder_path
-        from libs.components.navigation import create_navigation_bar
-
+        
         def handle_date_change(e):
             selected_date.value = f"Вибрана дата: {e.control.value.strftime('%Y-%m-%d')}"
             selected_date.data = e.control.value
@@ -212,6 +209,5 @@ class WritePage(ft.UserControl):
                 )
             ]
         )
-        return ft.Column([content, self.page.controls.append(WritePage.navigation_bar)], expand=True)
+        return ft.Column([content], expand=True)
         
-

@@ -1,14 +1,35 @@
 import flet as ft
 
-class EditPage():
-    def __init__(self, page: ft.Page, on_nav_change):
+class EditPage(ft.UserControl):
+    def __init__(self, page: ft.Page):
         super().__init__()
         self.page = page
-        self.on_nav_change = on_nav_change
 
     def build(self):
-        from libs.components.navigation import create_navigation_bar
+        from utils import get_time_based_color, show_page
+
         content = ft.Container(
-            ft.Text("rooomu")
+            ft.Container(
+                content=ft.IconButton(
+                    icon=ft.icons.ARROW_BACK,
+                    icon_color=get_time_based_color(),
+                    on_click=lambda e: show_page("home", self.page)
+                ),
+                alignment=ft.alignment.top_left,
+                padding=ft.padding.only(left=10),
+            ),
+            ft.Container(
+                content=ft.Text(
+                    "Редагувати лог",
+                    color=get_time_based_color(),
+                    font_family="Helvetica",
+                    weight=ft.FontWeight.BOLD,
+                    size=20
+                ),
+                alignment=ft.alignment.top_center,
+                padding=ft.padding.only(top=-45)
+            ),
+
+            ft.Text("roomu")
         )
-        return ft.Column([content, create_navigation_bar(self.page)], expand=True)
+        return ft.Column([content], expand=True)

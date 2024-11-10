@@ -4,19 +4,17 @@ from datetime import datetime, timedelta
 
 class RecordPage(ft.UserControl):
 
-    def __init__(self, page: ft.Page, on_nav_change):
+    def __init__(self, page: ft.Page):
         super().__init__()
         self.page = page
         self.stop_recording_flag = False  # Флаг для остановки записи
         self.record_duration = timedelta()  # Для отслеживания продолжительности записи
         self.start_time = None  # Время начала записи
         self.end_time = None  # Время окончания записи
-        self.on_nav_change = on_nav_change
 
     def build(self):
         from utils import todaysDate, show_page, get_time_based_color, folder_path
-        from libs.components.navigation import create_navigation_bar
-        
+
         start_value = "0:00:00"
         record_label = ft.Text(value=start_value, size=30, font_family="Helvetica", weight=ft.FontWeight.BOLD)
 
@@ -160,4 +158,4 @@ class RecordPage(ft.UserControl):
                 alignment=ft.alignment.center
             )
         ])
-        return ft.Column([content, create_navigation_bar(self.page)], expand=True)
+        return ft.Column([content], expand=True)
