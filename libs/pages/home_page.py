@@ -123,9 +123,9 @@ class HomePage(ft.UserControl):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="assets/icons/button.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="assets/icons/checklist.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                                        on_click=lambda e: show_page("record_page", self.page)
+                                        on_click=lambda e: e
                                     ),
                                     ft.ElevatedButton(
                                         height=100,
@@ -153,7 +153,7 @@ class HomePage(ft.UserControl):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="assets/icons/checklist.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="assets/icons/neuron.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
                                     ),
                                     ft.ElevatedButton(
