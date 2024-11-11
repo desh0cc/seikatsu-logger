@@ -1,26 +1,28 @@
 import flet as ft, json, os
 from datetime import datetime
 
-from libs.pages.write_page import WritePage
 from libs.pages.home_page import HomePage
 from libs.pages.settings_page import SettingsPage
 from libs.pages.chart_page import ChartPage
-from libs.pages.record_page import RecordPage
 from libs.pages.base_page import BasePage
+
 
 # DATE
 
 todaysDate = datetime.today().strftime("%Y-%m-%d")
 
-# CONFIG
+# GIF
 
-CONFIG_FILE = "config.json"
 GIF = ft.Image(
         src="assets/icons/animegirly.gif",  
         width=64, 
         height=64,
         fit=ft.ImageFit.CONTAIN  
     )
+
+# CONFIG
+
+CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
     "folder_path": "/logs",
     "color": "1",
@@ -63,13 +65,7 @@ def show_page(page_name, page: ft.Page):
     if page_name == "home":
         page.add(HomePage(page))
     elif page_name == "base_page":
-        base_page = BasePage(page)
-        page.add(base_page)
-        page.update()
-    elif page_name == "write_page":
-        page.add(WritePage(page))
-    elif page_name == "record_page":
-        page.add(RecordPage(page))
+        page.add(BasePage(page))
     elif page_name == "chart_page":
         page.add(ChartPage(page))
     elif page_name == "settings_page":

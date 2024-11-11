@@ -10,6 +10,8 @@ class BasePage(ft.UserControl):
         self.current_content = WritePage(page)
 
     def build(self):
+        from utils import get_time_based_color
+
         navigation_bar = ft.Container(
             ft.NavigationBar(
                 destinations=[
@@ -24,23 +26,16 @@ class BasePage(ft.UserControl):
                     ),
                 ],
                 on_change=self.on_navigation_change,
+                indicator_color=get_time_based_color()
             ),
             alignment=ft.alignment.bottom_center,
-            padding=ft.padding.only(left=-20,right=-20)
-        )
-
-        navigation_bar_container = ft.Container(
-            content=navigation_bar,
-            alignment=ft.alignment.bottom_center,
-            padding=ft.padding.only(left=-20, right=-20, bottom=-15),
-            expand=True,
+            padding=ft.padding.only(left=-20,right=-20, top=590)
         )
 
         self.content_container = ft.Container(content=self.current_content)
 
-        return ft.Column(
-            [self.content_container, navigation_bar_container],
-            expand=True
+        return ft.Stack(
+            [navigation_bar, self.content_container],
         )
 
     def on_navigation_change(self, e):

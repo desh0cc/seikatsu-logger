@@ -8,7 +8,7 @@ class EditPage(ft.UserControl):
     def build(self):
         from utils import get_time_based_color, show_page
 
-        content = ft.Container(
+        content = ft.Column([
             ft.Container(
                 content=ft.IconButton(
                     icon=ft.icons.ARROW_BACK,
@@ -31,5 +31,5 @@ class EditPage(ft.UserControl):
             ),
 
             ft.Text("roomu")
-        )
+        ])
         return ft.Column([content], expand=True)
