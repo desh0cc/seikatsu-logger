@@ -16,13 +16,13 @@ class BasePage(ft.UserControl):
             ft.NavigationBar(
                 destinations=[
                     ft.NavigationBarDestination(
-                        icon=ft.icons.CREATE, label="Write"
+                        icon=ft.icons.ADD, label="Додати"
                     ),
                     ft.NavigationBarDestination(
-                        icon=ft.icons.RECORD_VOICE_OVER, label="Record"
+                        icon=ft.icons.PLAY_ARROW_ROUNDED, label="Записати"
                     ),
                     ft.NavigationBarDestination(
-                        icon=ft.icons.EDIT, label="Edit"
+                        icon=ft.icons.EDIT_DOCUMENT, label="Редагувати"
                     ),
                 ],
                 on_change=self.on_navigation_change,
