@@ -47,35 +47,41 @@ class EditPage(ft.UserControl):
 
         def act_loading():
             if not picked_file.data:
-                return []  # No file selected yet
+                return []
             data = load_log(picked_file.data)
             return [ft.dropdown.Option(activity) for activity in data.keys()]
 
         def to_redact(file, activity, start_time=None, end_time=None, new_name=None):
             data = load_log(file)
 
-            start_time = str(start_time)
-            end_time = str(end_time)
+            if activity not in data:
+                self.page.open(ft.SnackBar(content=ft.Text("Такої активності не знайдено"), bgcolor=ft.colors.RED_ACCENT))
+                return
+            if new_name and new_name != activity:
+                data[new_name] = data.pop(activity)
+                activity = new_name
+            if start_time:
+                data[activity]["start_time"] = str(start_time)
+            if end_time:
+                data[activity]["end_time"] = str(end_time)
 
-            if activity in data:
-                if new_name:
-                    data[new_name] = data.pop(activity)
-                    activity = new_name
-                if start_time:
-                    data[activity]["start_time"] = start_time
-                if end_time:
-                    data[activity]["end_time"] = end_time
-                if start_time or end_time:
-                    data[activity]["duration"] = str(
-                        datetime.strptime(end_time, "%H:%M:%S") - datetime.strptime(start_time, "%H:%M:%S")
-                    )
+            current_start = data[activity].get("start_time")
+            current_end = data[activity].get("end_time")
+    
+            if current_start and current_end:
+                try:
+                    duration = datetime.strptime(current_end, "%H:%M:%S") - datetime.strptime(current_start, "%H:%M:%S")
+                    data[activity]["duration"] = str(duration)
+                except Exception as e:
+                    self.page.open(ft.SnackBar(content=ft.Text(f"Time calculation error: {e}"), bgcolor=ft.colors.RED_ACCENT))
+                    return
 
-                with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
-                    json.dump(data, f, indent=4, ensure_ascii=False)
-                    self.page.open(ft.SnackBar(content=ft.Text(f"Результат успішно занесено у {file}"), bgcolor=ft.colors.GREEN_ACCENT))
-                    print("Успіх!!!!!")
-            else:
-                self.page.open(ft.SnackBar(content=ft.Text("error lmao loser"), bgcolor=ft.colors.RED_ACCENT))
+            with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+            
+            self.page.open(ft.SnackBar(content=ft.Text(f"Успішно записано у: {file}"), bgcolor=ft.colors.GREEN_ACCENT))
+            print("є крутяк")
+
 
         picked_file = ft.Text("")
         picked_act = ft.Text("")
