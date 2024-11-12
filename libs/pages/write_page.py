@@ -71,7 +71,7 @@ class WritePage(ft.UserControl):
 
                 # Додавання нової активності
                 data[activity_input.data] = {
-                    "start_time": start_time.data.strftime('%H:%M:S'),
+                    "start_time": start_time.data.strftime('%H:%M:%S'),
                     "end_time": end_time.data.strftime('%H:%M:%S'),
                     "duration": str(duration)
                 }
