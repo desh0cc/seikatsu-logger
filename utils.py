@@ -50,7 +50,7 @@ folder_path = config.get("folder_path")
 
 def load_log(file):
     try:
-        with open(f"{folder_path}\\{file}.json", "r", encoding="utf-8") as f:
+        with open(f"{folder_path}\\{file}", "r", encoding="utf-8") as f:
             data = json.load(f)
             return data
     except (FileNotFoundError, json.JSONDecodeError) as e:
