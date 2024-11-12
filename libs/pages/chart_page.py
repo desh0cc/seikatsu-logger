@@ -17,11 +17,8 @@ class ChartPage(ft.UserControl):
 
         def load_files():
             try:
-                # Получаем список файлов в папке
                 files = os.listdir(folder_path)
-                # Фильтруем, чтобы отображать только файлы (не папки)
                 files = [f for f in files if os.path.isfile(os.path.join(folder_path, f))]
-                # Создаем элементы для Dropdown
                 return [ft.dropdown.Option(f) for f in files]
             except Exception as e:
                 print(f"Ошибка загрузки файлов: {e}")
@@ -63,12 +60,10 @@ class ChartPage(ft.UserControl):
                 duration = parse_duration(times["duration"])
                 activity_durations.append(duration.total_seconds())
 
-            # Создание круговой диаграммы
             fig = plt.figure(figsize=(8, 8))
             plt.pie(activity_durations, labels=activity_names, autopct='%1.1f%%', startangle=140)
             plt.title("Распределение активности за день")
 
-            # Используем MatplotlibChart для отображения графика в Flet
             chart = MatplotlibChart(fig, expand=True)
             self.page.controls.append(chart)
             self.page.update()
@@ -98,13 +93,20 @@ class ChartPage(ft.UserControl):
                 ft.Dropdown(
                     options=load_files(),
                     on_change=on_file_selected,
-                    hint_text="Виберіть файл"
-                )
+                    hint_text="Виберіть файл",
+                    width=200,
+                    height=35,
+                    border_color=get_time_based_color(),
+                    text_style=ft.alignment.center
+                ),
+                alignment=ft.alignment.center,
             ),
             ft.Container(
                 ft.ElevatedButton(
-                    "Вивести графік дня",
-                    on_click=lambda _: plotting()
-                )
+                    text="Вивести графік дня",
+                    on_click=lambda _: plotting(),
+                    color=get_time_based_color()
+                ),
+                alignment=ft.alignment.center
             )
         ])
