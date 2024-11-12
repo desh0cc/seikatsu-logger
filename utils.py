@@ -45,7 +45,18 @@ def load_config():
     
 config = load_config()
 folder_path = config.get("folder_path")
-    
+
+# LOGS
+
+def load_log(file):
+    try:
+        with open(f"{folder_path}\\{file}.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(e)
+
+
 # REACTIVE TIME
 
 def get_time_based_color():
