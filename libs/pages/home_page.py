@@ -100,7 +100,7 @@ class HomePage(ft.UserControl):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="assets/icons/folder.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="assets/icons/chat.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                     )
                                 ],
@@ -123,7 +123,7 @@ class HomePage(ft.UserControl):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="assets/icons/checklist.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="assets/icons/calendar.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                         on_click=lambda e: e
                                     ),
@@ -147,19 +147,19 @@ class HomePage(ft.UserControl):
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="assets/icons/chat.png", color=get_time_based_color(), width=32, height=32),
-                                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
-                                    ),
-                                    ft.ElevatedButton(
-                                        height=100,
-                                        width=100,
                                         content=ft.Image(src="assets/icons/neuron.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
                                     ),
                                     ft.ElevatedButton(
                                         height=100,
                                         width=100,
-                                        content=ft.Image(src="assets/icons/calendar.png", color=get_time_based_color(), width=32, height=32),
+                                        content=ft.Image(src="assets/icons/checklist.png", color=get_time_based_color(), width=32, height=32),
+                                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
+                                    ),
+                                    ft.ElevatedButton(
+                                        height=100,
+                                        width=100,
+                                        content=ft.Image(src="assets/icons/folder.png", color=get_time_based_color(), width=32, height=32),
                                         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                         on_click=lambda e: quit(ft.app)
                                     )

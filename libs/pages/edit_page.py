@@ -90,14 +90,12 @@ class EditPage(ft.UserControl):
             border_color=get_time_based_color(),
             width=180,  
             border_radius=10,
-            bgcolor=ft.colors.GREY_800,
             hint_text="Виберіть файл",
             hint_style=ft.TextStyle(
                 color=ft.colors.GREY_500,
                 size=14
             ),
             content_padding=ft.padding.symmetric(horizontal=10, vertical=8),
-            focused_bgcolor=ft.colors.GREY_700,
         )
 
         content = ft.Column([
@@ -130,15 +128,14 @@ class EditPage(ft.UserControl):
                     width=180,  
                     border_color=get_time_based_color(),
                     border_radius=10,
-                    bgcolor=ft.colors.GREY_800,
                     hint_text="Виберіть файл",
                     hint_style=ft.TextStyle(
                         color=ft.colors.GREY_500,
-                        size=14
+                        size=14,
                     ),
                     content_padding=ft.padding.symmetric(horizontal=10, vertical=8),
                     focused_bgcolor=ft.colors.GREY_700,
-                ), picked_file, alignment=ft.alignment.center,)],
+                ), picked_file, alignment=ft.alignment.center)],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),

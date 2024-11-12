@@ -16,7 +16,7 @@ class RecordPage(ft.UserControl):
         from utils import todaysDate, show_page, get_time_based_color, folder_path
 
         start_value = "0:00:00"
-        record_label = ft.Text(value=start_value, size=30, font_family="Helvetica", weight=ft.FontWeight.BOLD)
+        record_label = ft.Text(value=start_value, size=35, font_family="Helvetica", weight=ft.FontWeight.BOLD)
 
         activity_input = ft.Text("")
 
@@ -100,22 +100,7 @@ class RecordPage(ft.UserControl):
                 alignment=ft.alignment.top_center,
                 padding=ft.padding.only(top=-45)
             ),
-            ft.Container(
-                content=ft.Column([
-                    ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
-                    ft.Container(ft.TextField(
-                        width=200,
-                        text_align=ft.TextAlign.LEFT,
-                        label="Активність",
-                        hint_text="Введіть назву активності",
-                        color=ft.colors.WHITE,
-                        border_color=get_time_based_color(),
-                        label_style=ft.TextStyle(color=get_time_based_color()),
-                        on_change=on_change_activity
-                    ), alignment=ft.alignment.center),
-                    activity_input
-                ])
-            ),
+            
             ft.Container(
                 content=record_label,
                 alignment=ft.alignment.top_center
@@ -142,13 +127,33 @@ class RecordPage(ft.UserControl):
                 ft.Container(
                     content=ft.IconButton(
                         icon_color=ft.colors.RED_ACCENT,
-                        icon=ft.icons.GPP_MAYBE_ROUNDED,
+                        icon=ft.icons.DELETE_OUTLINE_ROUNDED,
                         width=45,
                         height=45,
                         on_click=lambda e: delete_recording()
                     )
                 ),
             ], alignment=ft.MainAxisAlignment.CENTER),
+
+
+            ft.Container(
+                content=ft.Column([
+                    ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
+                    ft.Container(ft.TextField(
+                        width=200,
+                        text_align=ft.TextAlign.LEFT,
+                        label="Активність",
+                        hint_text="Введіть назву активності",
+                        color=ft.colors.WHITE,
+                        border_color=get_time_based_color(),
+                        label_style=ft.TextStyle(color=get_time_based_color()),
+                        on_change=on_change_activity
+                    ), alignment=ft.alignment.center),
+                    activity_input
+                ])
+            ),
+
+
             ft.Container(
                 content=ft.ElevatedButton(
                     text="Додати",
