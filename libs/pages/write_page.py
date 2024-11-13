@@ -29,14 +29,6 @@ class WritePage(ft.UserControl):
             end_time.data = e.control.value
             self.update()
 
-        def json_load(file):
-            try:
-                with open(file, "r") as f:
-                    data = json.load(f)
-                return data
-            except Exception as e:
-                print(e)
-
         def save_activity():
             try:
                 # Перевірка на заповнення всіх полів
