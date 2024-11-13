@@ -22,14 +22,14 @@ class BasePage(ft.UserControl):
                         icon=ft.icons.PLAY_ARROW_ROUNDED, label="Записати"
                     ),
                     ft.NavigationBarDestination(
-                        icon=ft.icons.EDIT_DOCUMENT, label="Редагувати"
+                        icon=ft.icons.EDIT, label="Редагувати"
                     ),
                 ],
                 on_change=self.on_navigation_change,
                 indicator_color=get_time_based_color()
             ),
             alignment=ft.alignment.bottom_center,
-            padding=ft.padding.only(left=-20,right=-20, top=590)
+            padding=ft.padding.only(left=-20,right=-20,top=(self.page.height - 90))
         )
 
         self.content_container = ft.Container(content=self.current_content)
