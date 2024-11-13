@@ -154,7 +154,8 @@ class HomePage(ft.UserControl):
                                         height=100,
                                         width=100,
                                         content=ft.Image(src="assets/icons/checklist.png", color=get_time_based_color(), width=32, height=32),
-                                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
+                                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                                        on_click=lambda _: show_page("todo_page", self.page)
                                     ),
                                     ft.ElevatedButton(
                                         height=100,
