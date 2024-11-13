@@ -5,7 +5,7 @@ from libs.pages.home_page import HomePage
 from libs.pages.settings_page import SettingsPage
 from libs.pages.chart_page import ChartPage
 from libs.pages.base_page import BasePage
-
+from libs.pages.todo_page import TodoPage
 
 # DATE
 
@@ -75,12 +75,14 @@ def show_page(page_name, page: ft.Page):
 
     if page_name == "home":
         page.add(HomePage(page))
+    elif page_name == "settings_page":
+        page.add(SettingsPage(page))
     elif page_name == "base_page":
         page.add(BasePage(page))
     elif page_name == "chart_page":
         page.add(ChartPage(page))
-    elif page_name == "settings_page":
-        page.add(SettingsPage(page))
+    elif page_name == "todo_page":
+        page.add(TodoPage(page))
 
     page.update()
 
