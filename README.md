@@ -1,3 +1,4 @@
+## Seikatsu
 ### About the Project
 
 *Seikatsu* was inspired by the need for a simple, customizable way to log daily activities and reflect on personal productivity. Designed as a beginner-friendly project, this app helps users capture activities, analyze patterns through visualizations, and leverage AI for deeper insights. The data collected can also serve as context for generative AI models, creating a unique, personalized experience.
