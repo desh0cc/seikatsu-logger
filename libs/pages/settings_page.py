@@ -1,55 +1,31 @@
-import flet as ft
-from utils import *
+import flet as ft, json
+from libs.components.Back import BackToHome
 
+def settings_page(page: ft.Page) -> ft.View:
+    from utils import get_time_based_color, theme_switch
+    def save_cfg(e: ft.FilePickerResultEvent):
+        try:
+            with open("config.json", "r") as f:
+                config = json.load(f)
+        except FileNotFoundError:
+            config = {"folder_path": None}
 
-class SettingsPage(ft.UserControl):
-    def __init__(self, page: ft.Page):
-        super().__init__()
-        self.page = page
+        config["folder_path"] = str(f"{e.path}\\")
 
-    def build(self):
-        from utils import get_time_based_color, theme_switch, show_page
-        def save_cfg(e: ft.FilePickerResultEvent):
-            try:
-                with open("config.json", "r") as f:
-                    config = json.load(f)
-            except FileNotFoundError:
-                config = {"folder_path": None}
+        with open("config.json", "w") as f:
+            json.dump(config, f, indent=4)
 
-            config["folder_path"] = str(f"{e.path}\\")
+        page.open(ft.SnackBar(content=ft.Text("Шлях до папки успішно збережено в config.json"),bgcolor=get_time_based_color()))
 
-            with open("config.json", "w") as f:
-                json.dump(config, f, indent=4)
+    file_picker = ft.FilePicker(on_result=save_cfg)
+    page.overlay.append(file_picker)
 
-            self.page.open(ft.SnackBar(content=ft.Text("Шлях до папки успішно збережено в config.json"),bgcolor=get_time_based_color()))
+    navigator = BackToHome("Налаштування", page)
 
-
-        file_picker = ft.FilePicker(on_result=save_cfg)
-        self.page.overlay.append(file_picker)
-
-
-        return ft.Column([
-            ft.Container(
-                content=ft.IconButton(
-                    icon=ft.icons.ARROW_BACK,
-                    icon_color=get_time_based_color(),
-                    on_click=lambda e: show_page("home", self.page)
-                ),
-                alignment=ft.alignment.top_left,
-                padding=ft.padding.only(left=10),
-            ),
-            ft.Container(
-                content=ft.Text(
-                    "Налаштування",
-                    color=get_time_based_color(),
-                    font_family="Helvetica",
-                    weight=ft.FontWeight.BOLD,
-                    size=20
-                ),
-                alignment=ft.alignment.top_center,
-                padding=ft.padding.only(top=-45)
-            ),
-
+    return ft.View(
+        route="/settings",
+        controls=[
+            navigator.add(),
             ft.Container(
                 content=ft.Text("Про додаток", size=20,),
                 alignment=ft.alignment.center
@@ -67,7 +43,11 @@ class SettingsPage(ft.UserControl):
                 alignment=ft.alignment.center
             ),
 
-
+            ft.Container(
+                ft.Image(src="assets/icon.png", width=64, height=64),
+                alignment=ft.alignment.center,
+                padding=ft.padding.only(top=10)
+            ),
             ft.Container(
                 content=ft.Row(
                     [
@@ -108,15 +88,15 @@ class SettingsPage(ft.UserControl):
                             controls=[
                                 ft.MenuItemButton(
                                     content=ft.Text("SYSTEM"),
-                                    on_click=lambda e: theme_switch(self, self.page)
+                                    on_click=lambda e: theme_switch(e, page)
                                 ),
                                 ft.MenuItemButton(
                                     content=ft.Text("DARK"),
-                                    on_click=lambda e: theme_switch(self, self.page)
+                                    on_click=lambda e: theme_switch(e, page)
                                 ),
                                 ft.MenuItemButton(
                                     content=ft.Text("LIGHT"),
-                                    on_click=lambda e: theme_switch(self, self.page)
+                                    on_click=lambda e: theme_switch(e, page)
                                 ),
                             ],
                             style=ft.ButtonStyle(color=get_time_based_color())
@@ -141,6 +121,5 @@ class SettingsPage(ft.UserControl):
                 ),
                 alignment=ft.alignment.center,
                 padding=ft.padding.only(top=5)
-            )
-          
-        ])
+            )]
+        )

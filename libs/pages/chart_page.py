@@ -3,92 +3,72 @@ import matplotlib.pyplot as plt
 
 from datetime import timedelta
 from flet.matplotlib_chart import MatplotlibChart 
+from libs.components.Back import BackToHome
 
-from utils import *
+def chart_page(page: ft.Page) -> ft.View:
+    from utils import get_time_based_color, folder_path
 
-class ChartPage(ft.UserControl):
-    def __init__(self, page: ft.Page):
-        super().__init__()
-        self.page = page
-        self.selected_file = None  # Инициализация selected_file как None
+    selected_file = None 
 
-    def build(self):
-        from utils import get_time_based_color, folder_path, show_page
+    def load_files():
+        try:
+            files = os.listdir(folder_path)
+            files = [f for f in files if os.path.isfile(os.path.join(folder_path, f))]
+            return [ft.dropdown.Option(f) for f in files]
+        except Exception as e:
+            print(f"Ошибка загрузки файлов: {e}")
+            return []
 
-        def load_files():
-            try:
-                files = os.listdir(folder_path)
-                files = [f for f in files if os.path.isfile(os.path.join(folder_path, f))]
-                return [ft.dropdown.Option(f) for f in files]
-            except Exception as e:
-                print(f"Ошибка загрузки файлов: {e}")
-                return []
+    def on_file_selected(e):
+        selected_file = os.path.join(folder_path, e.control.value)  # Сохраняем полный путь к выбранному файлу
+        if selected_file:
+            page.snack_bar = ft.SnackBar(ft.Text(f"Вы выбрали: {selected_file}"))
+            page.snack_bar.open = True
+            page.update()
 
-        def on_file_selected(e):
-            self.selected_file = os.path.join(folder_path, e.control.value)  # Сохраняем полный путь к выбранному файлу
-            if self.selected_file:
-                self.page.snack_bar = ft.SnackBar(ft.Text(f"Вы выбрали: {self.selected_file}"))
-                self.page.snack_bar.open = True
-                self.page.update()
+    def load_activity_data(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return data
+        except Exception as e:
+            print(f"Ошибка загрузки данных: {e}")
+            return {}
 
-        def load_activity_data(file_path):
-            try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                return data
-            except Exception as e:
-                print(f"Ошибка загрузки данных: {e}")
-                return {}
+    def parse_duration(duration_str):
+        h, m, s = map(int, duration_str.split(":"))
+        return timedelta(hours=h, minutes=m, seconds=s)
 
-        def parse_duration(duration_str):
-            h, m, s = map(int, duration_str.split(":"))
-            return timedelta(hours=h, minutes=m, seconds=s)
+    def plotting():
+        if not selected_file:
+            print("Файл не выбран.")
+            return
 
-        def plotting():
-            if not self.selected_file:
-                print("Файл не выбран.")
-                return
+        data = load_activity_data(selected_file)
 
-            data = load_activity_data(self.selected_file)
+        # Подготовка данных для графика
+        activity_names = []
+        activity_durations = []
 
-            # Подготовка данных для графика
-            activity_names = []
-            activity_durations = []
+        for activity, times in data.items():
+            activity_names.append(activity)
+            duration = parse_duration(times["duration"])
+            activity_durations.append(duration.total_seconds())
 
-            for activity, times in data.items():
-                activity_names.append(activity)
-                duration = parse_duration(times["duration"])
-                activity_durations.append(duration.total_seconds())
+        fig = plt.figure(figsize=(8, 8))
+        plt.pie(activity_durations, labels=activity_names, autopct='%1.1f%%', startangle=140)
+        plt.title("Распределение активности за день")
 
-            fig = plt.figure(figsize=(8, 8))
-            plt.pie(activity_durations, labels=activity_names, autopct='%1.1f%%', startangle=140)
-            plt.title("Распределение активности за день")
+        chart = MatplotlibChart(fig, expand=True)
+        page.controls.append(chart)
+        page.update()
 
-            chart = MatplotlibChart(fig, expand=True)
-            self.page.controls.append(chart)
-            self.page.update()
+    navigator = BackToHome("Вивести графік", page)
 
-        return ft.Column([
-            ft.Container(
-                content=ft.IconButton(
-                    icon=ft.icons.ARROW_BACK,
-                    icon_color=get_time_based_color(),
-                    on_click=lambda e: show_page("home", self.page)
-                ),
-                alignment=ft.alignment.top_left,
-                padding=ft.padding.only(left=10),
-            ),
-            ft.Container(
-                content=ft.Text(
-                    "Вивести графік",
-                    color=get_time_based_color(),
-                    font_family="Helvetica",
-                    weight=ft.FontWeight.BOLD,
-                    size=20
-                ),
-                alignment=ft.alignment.top_center,
-                padding=ft.padding.only(top=-45)
-            ),
+    return ft.View(
+        route="/analyze",
+        controls=[
+            navigator.add(),
             ft.Container(
                 ft.Dropdown(
                     options=load_files(),
