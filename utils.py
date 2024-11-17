@@ -1,24 +1,9 @@
 import flet as ft, json, os
 from datetime import datetime
 
-from libs.pages.home_page import HomePage
-from libs.pages.settings_page import SettingsPage
-from libs.pages.chart_page import ChartPage
-from libs.pages.base_page import BasePage
-from libs.pages.todo_page import TodoPage
-
 # DATE
 
 todaysDate = datetime.today().strftime("%Y-%m-%d")
-
-# GIF
-
-GIF = ft.Image(
-        src="assets/icons/animegirly.gif",  
-        width=64, 
-        height=64,
-        fit=ft.ImageFit.CONTAIN  
-    )
 
 # CONFIG
 
@@ -69,22 +54,6 @@ def get_time_based_color():
             return "#907bd2"
         
 # PAGE SETTINGS
-
-def show_page(page_name, page: ft.Page):
-    page.controls.clear()
-
-    if page_name == "home":
-        page.add(HomePage(page))
-    elif page_name == "settings_page":
-        page.add(SettingsPage(page))
-    elif page_name == "base_page":
-        page.add(BasePage(page))
-    elif page_name == "chart_page":
-        page.add(ChartPage(page))
-    elif page_name == "todo_page":
-        page.add(TodoPage(page))
-
-    page.update()
 
 def theme_switch(e, page: ft.Page):
         selected_theme = e.control.content.value  
