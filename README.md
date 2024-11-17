@@ -9,6 +9,7 @@
 - 📂 Open-source
 - 🗃️ Locally stored
 - 💻 Cross-platform
+
 Activity logger built with flet.
 
 ## Roadmap
