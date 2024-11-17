@@ -1,3 +1,6 @@
 __pycache__/
 logs/
+build/
+dist/
 config.json
+main.spec
