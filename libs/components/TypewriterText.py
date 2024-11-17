@@ -26,5 +26,3 @@ class TypewriterText:
 
         self.animation_thread = Thread(target=animate)
         self.animation_thread.start()
-
-        
