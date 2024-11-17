@@ -1,4 +1,10 @@
-## Seikatsu
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="assets/icon.png" alt="Logo" width="80" height="80">
+  </a>
+  <h3 align="center">Seikatsu-Logger</h3>
+</div>
+
 ### About the Project
 
 *Seikatsu* was inspired by the need for a simple, customizable way to log daily activities and reflect on personal productivity. Designed as a beginner-friendly project, this app helps users capture activities, analyze patterns through visualizations, and leverage AI for deeper insights. The data collected can also serve as context for generative AI models, creating a unique, personalized experience.
