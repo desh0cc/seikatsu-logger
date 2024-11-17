@@ -139,7 +139,7 @@ def edit_page(page: ft.Page):
         content_padding=ft.padding.symmetric(horizontal=10, vertical=8),
     )
 
-    navigator = BackToHome("Вивести графік", page)
+    navigator = BackToHome("Редагувати лог", page)
 
     content = ft.Column([
         navigator.add(),
