@@ -11,6 +11,7 @@ CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
     "folder_path": "/logs",
     "color": "1",
+    "language": "en_US",
     "AI": "",
     "prompt": ""
 }
@@ -28,18 +29,29 @@ def load_config():
     except (FileNotFoundError, json.decoder.JSONDecodeError):
         return DEFAULT_CONFIG
     
-config = load_config()
-folder_path = config.get("folder_path")
 
 # LOGS
 
 def load_log(file):
+    config = load_config()
+    folder_path = config.get("folder_path")
     try:
         with open(f"{folder_path}\\{file}", "r", encoding="utf-8") as f:
             data = json.load(f)
             return data
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(e)
+
+# LANGUAGE LOADING
+
+def lang_load(key):
+    config = load_config()
+    try:
+        with open(f"lang/{config.get("language")}", "r", encoding="utf-8") as f:
+            translations = json.load(f)
+        return translations.get(key)
+    except FileNotFoundError:
+        print("Translations file not founded")
 
 
 # REACTIVE TIME
