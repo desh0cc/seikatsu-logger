@@ -1,11 +1,16 @@
-import flet as ft
+import flet as ft, json
 from libs.components.TypewriterText import TypewriterText
 
 def home_page(page: ft.Page) -> ft.View:
-    from utils import get_time_based_color, todaysDate
+    from utils import get_time_based_color, todaysDate, lang_load, load_config
+
+    config = load_config()
+    folder_path = config.get("folder_path")
+
+    print(config)
 
     typewriter = TypewriterText(page)
-    typewriter.start_animation("Привіт чим допомогти?")
+    typewriter.start_animation(lang_load("home_page_title"))
 
     time_color = get_time_based_color()
 
@@ -38,6 +43,19 @@ def home_page(page: ft.Page) -> ft.View:
             height=64,
             fit=ft.ImageFit.CONTAIN  
         )
+    
+    def get_note_text():
+        try:
+            with open(f"{folder_path}/notes/{todaysDate}.json", "r", encoding="utf-8") as f:
+                text = json.load(f)
+
+                if len(text["note"]) <= 5:
+                    return lang_load("home_page_note_desc")
+                else:
+                    return text["note"]
+                
+        except (FileNotFoundError, json.decoder.JSONDecodeError):
+            return lang_load("home_page_note_desc")
 
     return ft.View(
         route = "/",
@@ -69,7 +87,7 @@ def home_page(page: ft.Page) -> ft.View:
 
             ft.Container(
                 ft.Text(
-                    f"Сьогодні {todaysDate}",
+                    lang_load("home_page_date") + todaysDate,
                     size=13,
                     font_family="Helvetica",
                     weight=ft.FontWeight.W_600,
@@ -90,16 +108,17 @@ def home_page(page: ft.Page) -> ft.View:
                                     width=210,
                                     content=ft.Column([
                                         ft.Container(
-                                            ft.Text("Останній запис",color=get_time_based_color()),
+                                            ft.Text(lang_load("home_page_note_title"),color=get_time_based_color(), weight=ft.FontWeight.BOLD),
                                             alignment=ft.alignment.top_left,
                                             padding=ft.padding.only(top=15,left=-10)
                                         ),
                                         ft.Container(
-                                            ft.Text("Сьогодні ви написали не занадто багато.", color=ft.colors.WHITE70),
+                                            ft.Text(get_note_text(), color=ft.colors.WHITE70, max_lines=2, overflow="ellipsis"),
                                             alignment=ft.alignment.center_left,
                                             padding=ft.padding.only(left=-10,top=-7),
                                         )
                                     ]),
+                                    on_click=lambda _: page.go("/note"),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                 ),
                                 ft.ElevatedButton(

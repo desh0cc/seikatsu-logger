@@ -6,7 +6,10 @@ from flet.matplotlib_chart import MatplotlibChart
 from libs.components.Back import BackToHome
 
 def chart_page(page: ft.Page) -> ft.View:
-    from utils import get_time_based_color, folder_path
+    from utils import get_time_based_color, load_config
+
+    config = load_config()
+    folder_path = config.get("folder_path")
 
     selected_file = None 
 
