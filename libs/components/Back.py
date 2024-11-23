@@ -18,7 +18,7 @@ class BackToHome():
                         on_click=lambda e: self.page.go("/"),
                     ),
                     alignment=ft.alignment.top_left,
-                    padding=ft.padding.only(left=10),
+                    padding=ft.padding.only(left=5),
                 ),
                 # Title
                 ft.Container(
