@@ -6,6 +6,7 @@ from libs.pages.home_page import home_page
 from libs.pages.settings_page import settings_page
 from libs.pages.chart_page import chart_page
 from libs.pages.todo_page import todo_page
+from libs.pages.note_page import note_page
 
 def main(page: ft.Page):
     page.title = "Seikatsu"
@@ -31,6 +32,8 @@ def main(page: ft.Page):
             page.views.append(chart_page(page))
         if page.route == "/todo":
             page.views.append(todo_page(page))
+        if page.route == "/note":
+            page.views.append(note_page(page))
 
         page.update()
 

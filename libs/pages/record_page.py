@@ -2,42 +2,47 @@ import flet as ft, time, os, json, threading
 from datetime import datetime, timedelta
 from libs.components.Back import BackToHome
 
-def record_page(page: ft.Page) -> ft.View:
-    from utils import todaysDate, get_time_based_color, folder_path
+from utils import todaysDate, get_time_based_color, load_config
 
-    start_time = None 
-    end_time = None
 
-    record_duration = timedelta()
-    
+def record_page(page: ft.Page) -> ft.View:    
     start_value = "0:00:00"
     record_label = ft.Text(value=start_value, size=35, font_family="Helvetica", weight=ft.FontWeight.BOLD)
+
+    config = load_config()
+    folder_path = config.get("folder_path")
 
     activity_input = ft.Text("")
 
     def start_recording():
+        global stop_recording_flag, start_time
         stop_recording_flag = False  
         start_time = datetime.now()  
         print(start_time.strftime("%H:%M:%S"))
 
         def record_loop():
+            global record_duration, stop_recording_flag, end_time
+            record_duration = timedelta()
             while not stop_recording_flag:
                 time.sleep(1)
                 record_duration += timedelta(seconds=1)
                 record_label.value = str(record_duration)
                 page.update()  
 
+            
             end_time = datetime.now()
             print(end_time.strftime("%H:%M:%S"))
 
         threading.Thread(target=record_loop).start()
 
     def stop_recording():
+        global stop_recording_flag
         stop_recording_flag = True  
         record_label.value = str(record_duration)  
         page.update()
 
     def delete_recording():
+        global record_duration 
         record_duration = timedelta() 
         record_label.value = start_value  
         page.update()
@@ -47,13 +52,18 @@ def record_page(page: ft.Page) -> ft.View:
         page.update()
 
     def write_down(event, start_time, end_time, total_time):
+
+        if not os.path.exists(f"{folder_path}/logs/"):
+            os.makedirs(f"{folder_path}/logs/")
+
         try:
-            with open(f"{todaysDate}.json", "r", encoding="utf-8") as f:
+            with open(f"{folder_path}/logs/{todaysDate}.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             data = {}
 
-        file_path = os.path.join(folder_path, f"{todaysDate}.json")
+
+
         start_time_str = start_time.strftime('%H:%M:%S') if start_time else "Not recorded"
         end_time_str = end_time.strftime('%H:%M:%S') if end_time else "Not recorded"
 
@@ -64,7 +74,7 @@ def record_page(page: ft.Page) -> ft.View:
         }
 
         try:
-            with open(file_path, "w", encoding="utf-8") as f:
+            with open(f"{folder_path}/logs/{todaysDate}.json", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
             page.open(ft.SnackBar(ft.Text(f"Успішно занесено у {todaysDate}.json!"), bgcolor=ft.colors.GREEN_ACCENT))
         except Exception as e:
