@@ -59,9 +59,9 @@ def lang_load(key):
 def get_time_based_color():
         hour = datetime.now().hour
         if 6 <= hour < 12:
-            return "#7DAA6A"  
+            return "#A67B5B"  
         elif 12 <= hour < 18:
-            return "#D69465"   
+            return "#7DAA6A" 
         else:
             return "#907bd2"
         
