@@ -7,6 +7,7 @@ from libs.pages.settings_page import settings_page
 from libs.pages.chart_page import chart_page
 from libs.pages.todo_page import todo_page
 from libs.pages.note_page import note_page
+from libs.pages.chat_page import chat_page
 
 def main(page: ft.Page):
     page.title = "Seikatsu"
@@ -16,7 +17,7 @@ def main(page: ft.Page):
 
     page.window.icon = "assets/icon.png"
 
-    page.window.resizable = False
+    page.window.resizable = True
     page.theme_mode = ft.ThemeMode.SYSTEM
 
     def route_change(route):
@@ -34,6 +35,8 @@ def main(page: ft.Page):
             page.views.append(todo_page(page))
         if page.route == "/note":
             page.views.append(note_page(page))
+        if page.route == "/chat":
+            page.views.append(chat_page(page))
 
         page.update()
 
