@@ -1,4 +1,4 @@
-import flet as ft, json
+import flet as ft, json, platform, os, subprocess
 from libs.components.TypewriterText import TypewriterText
 
 def home_page(page: ft.Page) -> ft.View:
@@ -7,9 +7,7 @@ def home_page(page: ft.Page) -> ft.View:
     config = load_config()
     folder_path = config.get("folder_path")
 
-    print(config)
-
-    typewriter = TypewriterText(page)
+    typewriter = TypewriterText(25, ft.FontWeight.BOLD, page)
     typewriter.start_animation(lang_load("home_page_title"))
 
     time_color = get_time_based_color()
@@ -56,6 +54,16 @@ def home_page(page: ft.Page) -> ft.View:
                 
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return lang_load("home_page_note_desc")
+        
+    def open_folder(path):
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", path])
+        elif platform.system() == "Linux":
+            subprocess.Popen(["xdg-open", path])
+        else:
+            raise NotImplementedError("Uknown system")
 
     return ft.View(
         route = "/",
@@ -126,9 +134,10 @@ def home_page(page: ft.Page) -> ft.View:
                                     width=100,
                                     content=ft.Image(src="assets/icons/chat.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                                    on_click=lambda _: page.go("/chat")
                                 )
                             ],
-                            alignment=ft.MainAxisAlignment.CENTER  # Центрирование первой строки
+                            alignment=ft.MainAxisAlignment.CENTER
                         ),
                         padding=ft.padding.only(top=32)
                     ),
@@ -186,7 +195,7 @@ def home_page(page: ft.Page) -> ft.View:
                                     width=100,
                                     content=ft.Image(src="assets/icons/folder.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                                    on_click=lambda e: e
+                                    on_click=lambda e: open_folder(folder_path)
                                 )
                             ],
                             alignment=ft.MainAxisAlignment.CENTER  # Центрирование второй строки кнопок

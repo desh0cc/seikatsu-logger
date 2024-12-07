@@ -2,26 +2,28 @@ import flet as ft, json, os
 from datetime import datetime
 
 def write_page(page: ft.Page):
-    from utils import get_time_based_color, folder_path
-    from libs.components.Back import BackToHome
+    from utils import get_time_based_color, load_config, lang_load
+    from libs.components.NavigationComp import BackToHome
+
+    config = load_config()
+    folder_path = config.get("folder_path")
 
     def handle_date_change(e):
-        selected_date.value = f"Вибрана дата: {e.control.value.strftime('%Y-%m-%d')}"
+        selected_date.value = f"{e.control.value.strftime('%Y-%m-%d')}"
         selected_date.data = e.control.value
         page.update()
 
     def handle_activity_change(e):
-        activity_input.value = f"Вибрана активність: {e.control.value}"
         activity_input.data = e.control.value
         page.update()
 
     def handle_start_time_change(e):
-        start_time.value = f"Вибраний час: {e.control.value.strftime('%H:%M:%S')}"
+        start_time.value = f"{e.control.value.strftime('%H:%M:%S')}"
         start_time.data = e.control.value
         page.update()
 
     def handle_end_time_change(e):
-        end_time.value = f"Вибраний час: {e.control.value.strftime('%H:%M:%S')}"
+        end_time.value = f"{e.control.value.strftime('%H:%M:%S')}"
         end_time.data = e.control.value
         page.update()
 
@@ -29,7 +31,7 @@ def write_page(page: ft.Page):
         try:
             if not all([selected_date.data, start_time.data, end_time.data, activity_input.data]):
                 page.open(
-                    ft.SnackBar(content=ft.Text("Будь ласка, заповніть всі поля"), bgcolor=ft.colors.ERROR)
+                    ft.SnackBar(content=ft.Text(lang_load("write_page_error_message")), bgcolor=ft.colors.ERROR)
                 )
                 return
 
@@ -61,7 +63,7 @@ def write_page(page: ft.Page):
                 json.dump(data, f, ensure_ascii=False, indent=4)
 
             page.open(
-                ft.SnackBar(content=ft.Text("Активність успішно збережено"), bgcolor=ft.colors.GREEN)
+                ft.SnackBar(content=ft.Text(lang_load("write_page_success_message")), bgcolor=ft.colors.GREEN)
             )
 
             activity_input.value = ""
@@ -75,7 +77,7 @@ def write_page(page: ft.Page):
 
         except Exception as e:
             page.open(
-                ft.SnackBar(content=ft.Text(f"Помилка: {str(e)}"), bgcolor=ft.colors.ERROR)
+                ft.SnackBar(content=ft.Text(f"Error: {str(e)}"), bgcolor=ft.colors.ERROR)
             )
 
     selected_date = ft.Text("")
@@ -83,7 +85,7 @@ def write_page(page: ft.Page):
     end_time = ft.Text("")
     activity_input = ft.Text("")
 
-    navigator = BackToHome("Додати лог", page)
+    navigator = BackToHome(lang_load("write_page_title"), page)
 
     content = ft.Column([
             navigator.add(),
@@ -91,9 +93,9 @@ def write_page(page: ft.Page):
             # Секція вибору дати
             ft.Container(
                 content=ft.Column([
-                    ft.Container(ft.Text("Виберіть дату:", size=16),alignment=ft.alignment.center),
+                    ft.Container(ft.Text(lang_load("write_page_calendar_title"), size=16),alignment=ft.alignment.center),
                     ft.Container(ft.ElevatedButton(
-                        text="Відкрити календар", color=get_time_based_color(),
+                        text=lang_load("write_page_button_calendar"), color=get_time_based_color(),
                         icon=ft.icons.CALENDAR_MONTH,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: page.open(
@@ -109,12 +111,11 @@ def write_page(page: ft.Page):
             # Секція вибору активності
             ft.Container(
                 content=ft.Column([
-                    ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
+                    ft.Container(ft.Text(lang_load("write_page_activity_title"), size=16), alignment=ft.alignment.center),
                     ft.Container(ft.TextField(
                         width=200,
                         text_align=ft.TextAlign.LEFT,
-                        label="Активність",
-                        hint_text="Введіть назву активності",
+                        label=lang_load("write_page_activity_input_label"),
                         color=ft.colors.WHITE,
                         border_color=get_time_based_color(),
                         label_style=ft.TextStyle(color=get_time_based_color()),
@@ -127,9 +128,9 @@ def write_page(page: ft.Page):
             # Секція вибору часу
             ft.Container(
                 content=ft.Column([
-                    ft.Container(ft.Text("Вкажіть час початку:", size=16), alignment=ft.alignment.center),
+                    ft.Container(ft.Text(lang_load("write_page_start_time_title"), size=16), alignment=ft.alignment.center),
                     ft.Container(ft.ElevatedButton(
-                        text="Вибрати час",color=get_time_based_color(),
+                        text=lang_load("write_page_time_button"),color=get_time_based_color(),
                         icon=ft.icons.ACCESS_TIME,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: page.open(
@@ -146,9 +147,9 @@ def write_page(page: ft.Page):
 
             ft.Container(
                 content=ft.Column([
-                    ft.Container(ft.Text("Вкажіть час закінчення:", size=16), alignment=ft.alignment.center),
+                    ft.Container(ft.Text(lang_load("write_page_start_time_title"), size=16), alignment=ft.alignment.center),
                     ft.Container(ft.ElevatedButton(
-                        text="Вибрати час",color=get_time_based_color(),
+                        text=lang_load("write_page_time_button"),color=get_time_based_color(),
                         icon=ft.icons.ACCESS_TIME,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: page.open(
@@ -162,7 +163,7 @@ def write_page(page: ft.Page):
             ),
 
             ft.Container(
-                content=ft.ElevatedButton(text="Додати",color=get_time_based_color(),on_click=lambda _: save_activity()),
+                content=ft.ElevatedButton(text=lang_load("write_page_save_button"),color=get_time_based_color(),on_click=lambda _: save_activity()),
                 alignment=ft.alignment.center
             )
         ]

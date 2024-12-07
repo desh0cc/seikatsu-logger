@@ -1,32 +1,34 @@
 import flet as ft, json, os
 from datetime import datetime
-from libs.components.Back import BackToHome
+from libs.components.NavigationComp import BackToHome
 
 def edit_page(page: ft.Page):
-    from utils import get_time_based_color, load_log, folder_path
+    from utils import get_time_based_color, load_log, load_config, lang_load
+
+    config = load_config()
+    folder_path = config.get("folder_path")
 
     def handle_name_change(e):
         new_name.data = e.control.value
         page.update()
 
     def handle_sTime_change(e):
-        start_time.value = f"Новий початковий час: {e.control.value}"
+        start_time.value = f"{e.control.value}"
         start_time.data = e.control.value
         page.update()
 
     def handle_eTime_change(e):
-        end_time.value = f"Новий кінцевий час: {e.control.value}"
+        end_time.value = f"{e.control.value}"
         end_time.data = e.control.value
         page.update()
 
     def handle_file_change(e):
-        picked_file.value = f"Вибраний файл: {e.control.value}"
+        picked_file.value = f"{e.control.value}"
         picked_file.data = e.control.value
         activity_dropdown.options = act_loading()
         page.update()
 
     def handle_act_change(e):
-        picked_act.value = f"Вибрана активність {e.control.value}"
         picked_act.data = e.control.value
         page.update()
 
@@ -58,7 +60,7 @@ def edit_page(page: ft.Page):
         data = load_log(file)
 
         if activity not in data:
-            page.open(ft.SnackBar(ft.Text("Такої активності не знайдено"), bgcolor=ft.colors.RED_ACCENT))
+            page.open(ft.SnackBar(ft.Text(lang_load("edit_page_error_activity_not_found")), bgcolor=ft.colors.RED_ACCENT))
             return
         if new_name and new_name != activity:
             data[new_name] = data.pop(activity)
@@ -82,7 +84,7 @@ def edit_page(page: ft.Page):
         with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         
-        page.open(ft.SnackBar(ft.Text(f"Успішно записано у: {file}"), bgcolor=ft.colors.GREEN_ACCENT))
+        page.open(ft.SnackBar(ft.Text(f"{lang_load("edit_page_success_message")}"), bgcolor=ft.colors.GREEN_ACCENT))
         print("є крутяк")
 
     def to_delete(file, activity):
@@ -94,9 +96,9 @@ def edit_page(page: ft.Page):
             with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
             
-            page.open(ft.SnackBar(ft.Text(f"Активність '{activity}' Була видалена з {file}"), bgcolor=ft.colors.GREEN_ACCENT))
+            page.open(ft.SnackBar(ft.Text(lang_load("edit_page_delete_success")), bgcolor=ft.colors.GREEN_ACCENT))
         else:
-            page.open(ft.SnackBar(ft.Text("Активність не знайдена"), bgcolor=ft.colors.RED_ACCENT))
+            page.open(ft.SnackBar(ft.Text("Error"), bgcolor=ft.colors.RED_ACCENT))
 
     def refresh_components():
         file_dropdown.options = file_loading()
@@ -116,7 +118,7 @@ def edit_page(page: ft.Page):
                 width=180,  
                 border_color=get_time_based_color(),
                 border_radius=10,
-                hint_text="Виберіть файл",
+                hint_text=lang_load("edit_page_file_select_hint"),
                 hint_style=ft.TextStyle(
                     color=ft.colors.GREY_500,
                     size=14,
@@ -131,7 +133,7 @@ def edit_page(page: ft.Page):
         border_color=get_time_based_color(),
         width=300,  
         border_radius=10,
-        hint_text="Виберіть файл",
+        hint_text=lang_load("edit_page_file_select_hint"),
         hint_style=ft.TextStyle(
             color=ft.colors.GREY_500,
             size=14
@@ -139,21 +141,19 @@ def edit_page(page: ft.Page):
         content_padding=ft.padding.symmetric(horizontal=10, vertical=8),
     )
 
-    navigator = BackToHome("Редагувати лог", page)
+    navigator = BackToHome(lang_load("edit_page_title"), page)
 
     content = ft.Column([
         navigator.add(),
-        ft.Column([ft.Text("Виберіть файл логу:"), ft.Container(file_dropdown, picked_file,alignment=ft.alignment.center)], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-        ft.Column([ft.Text("Виберіть активність для ред.:"), ft.Container(activity_dropdown,picked_act,alignment=ft.alignment.center)], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER), 
+        ft.Column([ft.Text(lang_load("edit_page_file_select_title")), ft.Container(file_dropdown, picked_file,alignment=ft.alignment.center)], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+        ft.Column([ft.Text(lang_load("edit_page_activity_select_title")), ft.Container(activity_dropdown,picked_act,alignment=ft.alignment.center)], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER), 
 
         ft.Container(
             content=ft.Column([
-                ft.Container(ft.Text("Назва активності:", size=16), alignment=ft.alignment.center),
+                ft.Container(ft.Text(lang_load("edit_page_new_name_title"), size=16), alignment=ft.alignment.center),
                 ft.Container(ft.TextField(
                     width=200,
                     text_align=ft.TextAlign.LEFT,
-                    label="Активність",
-                    hint_text="Введіть назву активності",
                     color=ft.colors.WHITE,
                     border_color=get_time_based_color(),
                     label_style=ft.TextStyle(color=get_time_based_color()),
@@ -165,9 +165,9 @@ def edit_page(page: ft.Page):
 
         ft.Container(
             content=ft.Column([
-                ft.Container(ft.Text("Вкажіть новий час початку:", size=16), alignment=ft.alignment.center),
+                ft.Container(ft.Text(lang_load("edit_page_new_start_time_title"), size=16), alignment=ft.alignment.center),
                 ft.Container(ft.ElevatedButton(
-                    text="Вибрати час", color=get_time_based_color(),
+                    text=lang_load("edit_page_time_button"), color=get_time_based_color(),
                     icon=ft.icons.ACCESS_TIME,
                     icon_color=get_time_based_color(),
                     on_click=lambda e: page.open(
@@ -182,9 +182,9 @@ def edit_page(page: ft.Page):
 
         ft.Container(
             content=ft.Column([
-                ft.Container(ft.Text("Вкажіть новий час закінчення:", size=16), alignment=ft.alignment.center),
+                ft.Container(ft.Text(lang_load("edit_page_new_end_time_title"), size=16), alignment=ft.alignment.center),
                 ft.Container(ft.ElevatedButton(
-                    text="Вибрати час", color=get_time_based_color(),
+                    text=lang_load("edit_page_time_button"), color=get_time_based_color(),
                     icon=ft.icons.ACCESS_TIME,
                     icon_color=get_time_based_color(),
                     on_click=lambda e: page.open(
@@ -200,7 +200,7 @@ def edit_page(page: ft.Page):
             ft.Row([
                 ft.Container(
                     ft.ElevatedButton(
-                        text="Редагувати",
+                        text=lang_load("edit_page_edit_button"),
                         color=get_time_based_color(),
                         on_click=lambda _: to_redact(picked_file.data, picked_act.data, start_time.data, end_time.data, new_name.data)
                     ),

@@ -1,6 +1,6 @@
 import flet as ft, json, os
 from utils import get_time_based_color, todaysDate, load_config
-from libs.components.Back import BackToHome
+from libs.components.NavigationComp import BackToHome
 
 def note_page(page: ft.Page) -> ft.View:
     back = BackToHome("Зробити запис", page)

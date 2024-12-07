@@ -1,9 +1,8 @@
 import flet as ft, time, os, json, threading
 from datetime import datetime, timedelta
-from libs.components.Back import BackToHome
+from libs.components.NavigationComp import BackToHome
 
-from utils import todaysDate, get_time_based_color, load_config
-
+from utils import todaysDate, get_time_based_color, load_config, lang_load
 
 def record_page(page: ft.Page) -> ft.View:    
     start_value = "0:00:00"
@@ -62,8 +61,6 @@ def record_page(page: ft.Page) -> ft.View:
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             data = {}
 
-
-
         start_time_str = start_time.strftime('%H:%M:%S') if start_time else "Not recorded"
         end_time_str = end_time.strftime('%H:%M:%S') if end_time else "Not recorded"
 
@@ -76,12 +73,12 @@ def record_page(page: ft.Page) -> ft.View:
         try:
             with open(f"{folder_path}/logs/{todaysDate}.json", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
-            page.open(ft.SnackBar(ft.Text(f"Успішно занесено у {todaysDate}.json!"), bgcolor=ft.colors.GREEN_ACCENT))
+            page.open(ft.SnackBar(ft.Text(f"{lang_load("record_page_error_message")}"), bgcolor=ft.colors.GREEN_ACCENT))
         except Exception as e:
             print(f"Error writing to file: {e}")
-            page.open(ft.SnackBar(ft.Text("Виникла проблема"), bgcolor=ft.colors.RED_ACCENT))
+            page.open(ft.SnackBar(ft.Text(lang_load("record_page_error_message")), bgcolor=ft.colors.RED_ACCENT))
             
-    navigator = BackToHome("Записати лог", page)
+    navigator = BackToHome(lang_load("record_page_title"), page)
 
     content = ft.Column([
         navigator.add(),
@@ -90,6 +87,7 @@ def record_page(page: ft.Page) -> ft.View:
             content=record_label,
             alignment=ft.alignment.top_center
         ),
+
         ft.Row([
             ft.Container(
                 content=ft.IconButton(
@@ -120,19 +118,16 @@ def record_page(page: ft.Page) -> ft.View:
             ),
         ], alignment=ft.MainAxisAlignment.CENTER),
 
-
         ft.Container(
             ft.Column([
                 ft.Container(
-                    ft.Text("Назва активності:", size=16), 
+                    ft.Text(lang_load("record_page_activity_title"), size=16), 
                     alignment=ft.alignment.center
                 ),
                 ft.Container(
                     ft.TextField(
                         width=200,
                         text_align=ft.TextAlign.LEFT,
-                        label="Активність",
-                        hint_text="Введіть назву активності",
                         color=ft.colors.WHITE,
                         border_color=get_time_based_color(),
                         label_style=ft.TextStyle(color=get_time_based_color()),
@@ -143,10 +138,9 @@ def record_page(page: ft.Page) -> ft.View:
             ])
         ),
 
-
         ft.Container(
             content=ft.ElevatedButton(
-                text="Додати",
+                text=lang_load("record_page_save_button"),
                 color=get_time_based_color(),
                 on_click=lambda e: write_down(activity_input.data, start_time, end_time, record_label.value)
             ),
