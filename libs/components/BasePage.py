@@ -4,7 +4,7 @@ from libs.pages.write_page import write_page
 from libs.pages.record_page import record_page
 from libs.pages.edit_page import edit_page
 
-from utils import get_time_based_color
+from utils import get_time_based_color, lang_load
 
 class BasePage:
     def __init__(self, page):
@@ -25,9 +25,9 @@ class BasePage:
 
         navigation_bar = ft.NavigationBar(
             destinations=[
-                ft.NavigationBarDestination(icon=ft.icons.ADD, label="Додати"),
-                ft.NavigationBarDestination(icon=ft.icons.PLAY_ARROW_ROUNDED, label="Записати"),
-                ft.NavigationBarDestination(icon=ft.icons.EDIT, label="Редагувати"),
+                ft.NavigationBarDestination(icon=ft.icons.ADD, label=lang_load("base_page_add")),
+                ft.NavigationBarDestination(icon=ft.icons.PLAY_ARROW_ROUNDED, label=lang_load("base_page_record")),
+                ft.NavigationBarDestination(icon=ft.icons.EDIT, label=lang_load("base_page_edit")),
             ],
             on_change=on_navigation_change,
             indicator_color=get_time_based_color(),
