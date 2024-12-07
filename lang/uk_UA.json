@@ -1,8 +1,11 @@
 {
-    "home_page_title": "Привіт чим допомогти?",
+    "home_page_title": "Привіт, чим допомогти?",
     "home_page_date": "Сьогодні ",
-    "home_page_note_title": "Останній запис",
+    "home_page_note_title": "Щоденний запис",
     "home_page_note_desc": "Сьогодні ви ще нічого не записали",
+    "base_page_add": "Додати",
+    "base_page_record": "Записати",
+    "base_page_edit": "Редагувати",
     "write_page_title": "Додати лог",
     "write_page_calendar_title": "Виберіть дату:",
     "write_page_button_calendar": "Відкрити календар",
@@ -56,5 +59,8 @@
     "settings_page_folder_title": "Вибрати шлях до логів",
     "settings_page_folder_button": "Вибрати теку",
     "settings_page_folder_dialog": "Вибрати теку для логів",
-    "settings_page_save_success": "Шлях до папки успішно збережено в config.json"
+    "settings_page_choose_lang": "Вибрати мову",
+    "settings_page_save_success": "Шлях до папки успішно збережено в config.json",
+    "chart_page_title": "Вивести графік",
+    "chart_page_button": "Вивести графік"
 }
