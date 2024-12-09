@@ -10,10 +10,8 @@ todaysDate = datetime.today().strftime("%Y-%m-%d")
 CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
     "folder_path": "/logs",
-    "color": "1",
     "language": "en_US",
-    "AI": "",
-    "prompt": ""
+    "model": ""
 }
 
 def save_config(config_data):
