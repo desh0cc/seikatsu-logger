@@ -26,3 +26,24 @@ class TypewriterText:
 
         self.animation_thread = Thread(target=animate)
         self.animation_thread.start()
+
+    def set_text(self, text):
+        self.text.value = text
+        self.page.update(self.text)
+
+    def animate_thinking(self, base_text="Thinking", delay=0.5):
+        def thinking_animation():
+            dots = ""
+            while True:
+                # Animate the dots
+                for i in range(4):
+                    self.text.value = f"{base_text}{'.' * i}"
+                    self.page.update(self.text)
+                    time.sleep(delay)  # Adjust the speed of dot animation
+                time.sleep(delay)  # Pause before starting over
+
+        if self.animation_thread and self.animation_thread.is_alive():
+            return  # Prevent starting a new animation if one is already running
+
+        self.animation_thread = Thread(target=thinking_animation)
+        self.animation_thread.start()
