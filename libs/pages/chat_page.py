@@ -1,25 +1,29 @@
-import flet as ft, asyncio, time
+import flet as ft, asyncio, time, datetime
 
 from ollama import chat
 
 from libs.components.NavigationComp import BackToHome
 from libs.components.TypewriterText import TypewriterText
 
-from utils import get_time_based_color
+from utils import get_time_based_color, load_config
 
 def chat_page(page: ft.Page) -> ft.View:
-    navigator = BackToHome("Чат з ШІ", page)
+    navigator = BackToHome("Чат", page)
 
     message_cont = ft.Column(controls=[], expand=True, scroll=ft.ScrollMode.ALWAYS)
+
+    exact_moment = datetime.datetime.now().strftime("%H:%M")
+
+    config = load_config()
 
     textik = ft.TextField(
         value="",
         hint_text="Type your message...",
         text_style=ft.TextStyle(
-            font_family="Helvetica",
             color=ft.colors.BLACK
         ),
-        border_radius=15,
+        border_radius=20,
+        icon=ft.icons.TEXT_FIELDS,
         border=ft.BorderSide(width=7),
         focused_border_width=2,
         border_width=2,
@@ -30,18 +34,30 @@ def chat_page(page: ft.Page) -> ft.View:
         multiline=True
     )
 
-
     async def send_message():
         user_message = textik.value.strip()
         max_width = 300 if len(user_message) > 30 else None
         if user_message:
             animated_container = ft.Container(
-                content=ft.Text(
-                    user_message,
-                    color=ft.colors.WHITE,
-                    size=15,
-                    no_wrap=False
-                ),
+                content=ft.Column([
+                    ft.Container(
+                        ft.Text(
+                            user_message,
+                            color=ft.colors.WHITE,
+                            size=15,
+                            no_wrap=False
+                        ),
+                        alignment=ft.alignment.center
+                    ),
+                    ft.Container(
+                        ft.Text(
+                            exact_moment,
+                            color=ft.colors.with_opacity(0.4, "#FFFFFF"),
+                        ),
+                        alignment=ft.alignment.bottom_right,
+                        expand=1
+                    )
+                ]),
                 bgcolor=ft.colors.GREY_800,
                 border_radius=15,
                 width=max_width,
@@ -76,7 +92,7 @@ def chat_page(page: ft.Page) -> ft.View:
 
     def fetch_response(user_message):
         stream = chat(
-            model="llama3:latest",
+            model=config.get("model"),
             messages=[{'role': 'user', 'content': user_message}],
             stream=True
         )
@@ -139,7 +155,7 @@ def chat_page(page: ft.Page) -> ft.View:
                     textik,
                     ft.Container(
                         ft.IconButton(
-                            icon=ft.icons.SEND,
+                            icon=ft.icons.SEND_ROUNDED,
                             icon_color=ft.colors.WHITE,
                             splash_radius=15,
                             bgcolor=get_time_based_color(),
