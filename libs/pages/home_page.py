@@ -97,7 +97,6 @@ def home_page(page: ft.Page) -> ft.View:
                 ft.Text(
                     lang_load("home_page_date") + todaysDate,
                     size=13,
-                    font_family="Helvetica",
                     weight=ft.FontWeight.W_600,
                     color=get_time_based_color()
                 ),

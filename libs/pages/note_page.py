@@ -65,7 +65,6 @@ def note_page(page: ft.Page) -> ft.View:
                             ft.Text(
                                 f"Запис за {todaysDate}",
                                 size=16,
-                                font_family="Helvetica",
                                 color=ft.colors.WHITE
                             ),
                             alignment=ft.alignment.center,
