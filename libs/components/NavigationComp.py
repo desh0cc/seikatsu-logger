@@ -25,7 +25,6 @@ class BackToHome():
                     content=ft.Text(
                         f"{self.title}",
                         color=get_time_based_color(),
-                        font_family="Helvetica",
                         weight=ft.FontWeight.BOLD,
                         size=20
                     ),

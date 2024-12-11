@@ -5,8 +5,7 @@ class TypewriterText:
     def __init__(self, size: int, weight: ft.FontWeight, page: ft.Page):
         self.text = ft.Text(
             size=size,
-            weight=weight,
-            font_family="Helvetica"
+            weight=weight
         )
         self.page = page
         self.animation_thread = None
