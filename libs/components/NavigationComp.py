@@ -13,7 +13,7 @@ class BackToHome():
                 # Back button
                 ft.Container(
                     content=ft.IconButton(
-                        icon=ft.icons.ARROW_BACK,
+                        icon=ft.Icons.ARROW_BACK_IOS_NEW,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: self.page.go("/"),
                     ),

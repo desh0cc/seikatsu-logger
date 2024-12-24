@@ -25,9 +25,9 @@ class BasePage:
 
         navigation_bar = ft.NavigationBar(
             destinations=[
-                ft.NavigationBarDestination(icon=ft.icons.ADD, label=lang_load("base_page_add")),
-                ft.NavigationBarDestination(icon=ft.icons.PLAY_ARROW_ROUNDED, label=lang_load("base_page_record")),
-                ft.NavigationBarDestination(icon=ft.icons.EDIT, label=lang_load("base_page_edit")),
+                ft.NavigationBarDestination(icon=ft.Icons.ADD, label=lang_load("base_page_add")),
+                ft.NavigationBarDestination(icon=ft.Icons.PLAY_ARROW_ROUNDED, label=lang_load("base_page_record")),
+                ft.NavigationBarDestination(icon=ft.Icons.EDIT, label=lang_load("base_page_edit")),
             ],
             on_change=on_navigation_change,
             indicator_color=get_time_based_color(),
