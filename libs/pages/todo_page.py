@@ -16,9 +16,22 @@ def todo_page(page: ft.Page):
                 text_style=ft.TextStyle(
                     color=ft.colors.BLACK87,
                     weight=ft.FontWeight.W_600,
-                    font_family="Helvetica"
+                    font_family="CaskaydiaCove"
                 )
             )
+    
+    def make_todo():
+        if textik.value.strip():
+            todos.controls.append(
+                ft.Container(
+                    content=ft.Row([
+                        ft.Text(textik.value)
+                    ]),
+                    alignment=ft.alignment.center
+                )
+            )
+            textik.value = ""
+            page.update()
 
     tabs = ft.Tabs(
         tabs=[
@@ -79,7 +92,7 @@ def todo_page(page: ft.Page):
                                 icon=ft.icons.ADD,
                                 icon_color=get_time_based_color(),
                                 bgcolor=ft.colors.with_opacity(0.4,ft.colors.BLACK),
-                                on_click=lambda _: _
+                                on_click=lambda _: make_todo()
                             )
                         ]),
                         alignment=ft.alignment.center,
