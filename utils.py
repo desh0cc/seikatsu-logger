@@ -1,5 +1,6 @@
-import flet as ft, json, os
+import json, os
 from datetime import datetime
+
 
 # DATE
 
@@ -31,25 +32,55 @@ def load_config():
 # LOGS
 
 def load_log(file):
+    """Загрузка логів"""
     config = load_config()
     folder_path = config.get("folder_path")
     try:
-        with open(f"{folder_path}\\{file}", "r", encoding="utf-8") as f:
+        with open(f"{folder_path}\\logs\\{file}", "r", encoding="utf-8") as f:
             data = json.load(f)
             return data
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(e)
 
+def if_intersect(new_start, new_end, existing_logs) -> bool:
+    """Перевірка на стик часу логів"""
+    new_start = datetime.strptime(new_start, "%H:%M:%S")
+    new_end = datetime.strptime(new_end, "%H:%M:%S")
+    
+    for log_id, log in existing_logs.items():
+        start_existing = datetime.strptime(log["start_time"], "%H:%M:%S")
+        end_existing = datetime.strptime(log["end_time"], "%H:%M:%S")
+        
+        if new_start < end_existing and new_end > start_existing:
+            return True
+
+    return False
+
+def duration_to_seconds(duration: str) -> str:
+    """Перевод часу в секунди"""
+    times = duration.split(":")
+    return str((int(times[0]) * 3600) + (int(times[1]) * 60) + int(times[2]))
+        
 # LANGUAGE LOADING
 
-def lang_load(key):
+def lang_load(key, **kwargs):
     config = load_config()
     try:
-        with open(f"lang/{config.get("language")}", "r", encoding="utf-8") as f:
+        lang_file = f"lang/{config.get('language')}"
+        
+        with open(lang_file, "r", encoding="utf-8") as f:
             translations = json.load(f)
-        return translations.get(key)
-    except FileNotFoundError:
-        print("Translations file not founded")
+
+        template = translations.get(key)
+        if template is None:
+            print(f"Key '{key}' not found in translations")
+            return key
+
+        return template.format(**kwargs)
+    
+    except (FileNotFoundError, json.JSONDecodeError):
+        print(f"Translations file '{lang_file}' not found")
+        return key
 
 
 # REACTIVE TIME
@@ -63,14 +94,5 @@ def get_time_based_color():
         else:
             return "#907bd2"
         
-# PAGE SETTINGS
-
-def theme_switch(e, page: ft.Page):
-        selected_theme = e.control.content.value  
-        if selected_theme == "SYSTEM":
-            page.theme_mode = ft.ThemeMode.SYSTEM
-        elif selected_theme == "DARK":
-            page.theme_mode = ft.ThemeMode.DARK
-        elif selected_theme == "LIGHT":
-            page.theme_mode = ft.ThemeMode.LIGHT
-        page.update()
+if __name__ == "__main__":
+    print(duration_to_seconds("03:25:30"))
