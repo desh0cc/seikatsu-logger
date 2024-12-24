@@ -1,37 +1,12 @@
 import flet as ft, json, os
-from utils import get_time_based_color, todaysDate, load_config
+from utils import get_time_based_color, todaysDate, load_config, lang_load
 from libs.components.NavigationComp import BackToHome
 
 def note_page(page: ft.Page) -> ft.View:
-    back = BackToHome("Зробити запис", page)
-
-    deleted = None
+    back = BackToHome(lang_load("note_page_title"), page)
 
     config = load_config()
     folder_path = config.get("folder_path")
-
-    def on_field_change(e):
-        nonlocal deleted
-        text.data = e.control.value
-
-        if deleted:
-            e.control.value = load_text()
-            page.update()
-            deleted = False
-
-        page.update()
-
-    def save_note(text):
-        try:
-            if not os.path.exists(f"{folder_path}/notes/"):
-                os.makedirs(f"{folder_path}/notes/")
-
-            with open(f"{folder_path}/notes/{todaysDate}.json", "w", encoding="utf-8") as f:
-                json.dump({"note": text}, f, ensure_ascii=False, indent=4)
-                page.open(ft.SnackBar(ft.Text("Успішно записано", color=ft.colors.WHITE), bgcolor=ft.colors.GREEN))
-
-        except Exception as e:
-            print(e)
 
     def load_text():
         try:
@@ -40,19 +15,40 @@ def note_page(page: ft.Page) -> ft.View:
                 return text["note"]
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             return ""
+
+    def save_note():
+        try:
+            if not os.path.exists(f"{folder_path}/notes/"):
+                os.makedirs(f"{folder_path}/notes/")
+
+            with open(f"{folder_path}/notes/{todaysDate}.json", "w", encoding="utf-8") as f:
+                json.dump({"note": text_field.value}, f, ensure_ascii=False, indent=4)
+                page.open(ft.SnackBar(ft.Text(lang_load("note_page_save_success"), color=ft.Colors.WHITE), bgcolor=ft.Colors.GREEN))
+
+        except Exception as e:
+            print(e)
         
     def delete_note():
-        nonlocal deleted
         try:
+            text_field.value = ""
             os.remove(f"{folder_path}/notes/{todaysDate}.json")
-            text.data = ""
-            deleted = True
             page.update()
-            page.open(ft.SnackBar(ft.Text("Нотатку видалено", color=ft.colors.WHITE), bgcolor=ft.colors.RED_ACCENT))
+            page.open(ft.SnackBar(ft.Text(lang_load("note_page_delete_success"), color=ft.Colors.WHITE), bgcolor=ft.Colors.RED_ACCENT))
         except FileNotFoundError:
-            page.open(ft.SnackBar(ft.Text("Помилка при видаленні нотатки"), bgcolor=ft.colors.RED_ACCENT))
+            text_field.value = ""
+            page.update()
+            page.open(ft.SnackBar(ft.Text(lang_load("note_page_delete_error")), bgcolor=ft.Colors.RED_ACCENT))
 
-    text = ft.Text("")
+
+    text_field = ft.TextField(
+        value=load_text(),
+        multiline=True,
+        expand=True,
+        min_lines=20,
+        cursor_color=get_time_based_color(),
+        border_color=ft.Colors.with_opacity(0.0, color=ft.Colors.GREY_800),
+        hint_text=lang_load("note_page_note_write"),
+    )
 
     return ft.View(
         route="/note",
@@ -63,9 +59,9 @@ def note_page(page: ft.Page) -> ft.View:
                     [
                         ft.Container(
                             ft.Text(
-                                f"Запис за {todaysDate}",
+                                lang_load(f"note_page_subtitle", date=todaysDate),
                                 size=16,
-                                color=ft.colors.WHITE
+                                color=ft.Colors.WHITE
                             ),
                             alignment=ft.alignment.center,
                             padding=ft.padding.only(left=23)
@@ -74,19 +70,19 @@ def note_page(page: ft.Page) -> ft.View:
                             [
                                 ft.Container(
                                     ft.IconButton(
-                                        icon=ft.icons.SAVE,
+                                        icon=ft.Icons.SAVE_ROUNDED,
                                         icon_color=get_time_based_color(),
-                                        on_click=lambda _: save_note(text.data),
-                                        tooltip="Зберегти нотатку"
+                                        on_click=lambda _: save_note(),
+                                        tooltip=lang_load("note_page_save_tooltip")
                                     ),
                                     alignment=ft.alignment.center,
                                 ),
                                 ft.Container(
                                     ft.IconButton(
-                                        icon=ft.icons.DELETE,
-                                        icon_color=ft.colors.RED,
+                                        icon=ft.Icons.DELETE_ROUNDED,
+                                        icon_color=ft.Colors.RED,
                                         on_click=lambda _: delete_note(),
-                                        tooltip="Видалити нотатку"
+                                        tooltip=lang_load("note_page_delete_tooltip")
                                     ),
                                     alignment=ft.alignment.center,
                                     padding=ft.padding.only(left=-5, right=15)
@@ -97,7 +93,7 @@ def note_page(page: ft.Page) -> ft.View:
                     ],
                     alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 ),
-                bgcolor=ft.colors.with_opacity(0.4, "#333333"),
+                bgcolor=ft.Colors.with_opacity(0.4, "#333333"),
                 height=45,
                 border_radius=7,
                 padding=ft.padding.only(left=-10,right=-10),
@@ -106,23 +102,14 @@ def note_page(page: ft.Page) -> ft.View:
             ft.Column(
                 controls=[
                     ft.Container(
-                        ft.TextField(
-                            value=load_text(),
-                            multiline=True,
-                            expand=True,
-                            min_lines=20,
-                            on_change=on_field_change,
-                            border_color=ft.colors.with_opacity(0.0, color=ft.colors.GREY_800),
-                            hint_text="Введіть текст нотатки...",
-                        ),
-                        bgcolor=ft.colors.with_opacity(0.4, "#222222"),
+                        text_field,
+                        bgcolor=ft.Colors.with_opacity(0.4, "#222222"),
                         border_radius=7
                     ),
                 ],
                 scroll=ft.ScrollMode.ALWAYS,
                 expand=True, 
                 height=300,
-            ),
-            text
+            )
         ]
     )

@@ -20,15 +20,15 @@ def chat_page(page: ft.Page) -> ft.View:
         value="",
         hint_text="Type your message...",
         text_style=ft.TextStyle(
-            color=ft.colors.BLACK
+            color=ft.Colors.BLACK
         ),
         border_radius=20,
-        icon=ft.icons.TEXT_FIELDS,
+        icon=ft.Icons.TEXT_FIELDS,
         border=ft.BorderSide(width=7),
         focused_border_width=2,
         border_width=2,
         cursor_color=get_time_based_color(),
-        fill_color=ft.colors.WHITE,
+        fill_color=ft.Colors.WHITE,
         border_color=get_time_based_color(),
         max_lines=5,
         multiline=True
@@ -43,7 +43,7 @@ def chat_page(page: ft.Page) -> ft.View:
                     ft.Container(
                         ft.Text(
                             user_message,
-                            color=ft.colors.WHITE,
+                            color=ft.Colors.WHITE,
                             size=15,
                             no_wrap=False
                         ),
@@ -52,13 +52,13 @@ def chat_page(page: ft.Page) -> ft.View:
                     ft.Container(
                         ft.Text(
                             exact_moment,
-                            color=ft.colors.with_opacity(0.4, "#FFFFFF"),
+                            color=ft.Colors.with_opacity(0.4, "#FFFFFF"),
                         ),
                         alignment=ft.alignment.bottom_right,
                         expand=1
                     )
                 ]),
-                bgcolor=ft.colors.GREY_800,
+                bgcolor=ft.Colors.GREY_800,
                 border_radius=15,
                 width=max_width,
                 padding=10,
@@ -87,7 +87,7 @@ def chat_page(page: ft.Page) -> ft.View:
 
             page.update()
         else:
-            page.open(ft.SnackBar(ft.Text("Будь ласка напишіть щось!"), bgcolor=ft.colors.RED_600))
+            page.open(ft.SnackBar(ft.Text("Будь ласка напишіть щось!"), bgcolor=ft.Colors.RED_600))
 
 
     def fetch_response(user_message):
@@ -155,8 +155,8 @@ def chat_page(page: ft.Page) -> ft.View:
                     textik,
                     ft.Container(
                         ft.IconButton(
-                            icon=ft.icons.SEND_ROUNDED,
-                            icon_color=ft.colors.WHITE,
+                            icon=ft.Icons.ARROW_UPWARD_ROUNDED,
+                            icon_color=ft.Colors.WHITE,
                             splash_radius=15,
                             bgcolor=get_time_based_color(),
                             on_click=lambda _: asyncio.run(send_message())
@@ -164,7 +164,7 @@ def chat_page(page: ft.Page) -> ft.View:
                         padding=ft.padding.only(left=10)
                     )
                 ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.CENTER),
-                bgcolor=ft.colors.with_opacity(0.4, "#333333"),
+                bgcolor=ft.Colors.with_opacity(0.4, "#333333"),
                 border_radius=15,
                 height=70,
                 padding=ft.padding.only(left=-20,right=-20),

@@ -73,10 +73,10 @@ def record_page(page: ft.Page) -> ft.View:
         try:
             with open(f"{folder_path}/logs/{todaysDate}.json", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
-            page.open(ft.SnackBar(ft.Text(f"{lang_load("record_page_error_message")}"), bgcolor=ft.colors.GREEN_ACCENT))
+            page.open(ft.SnackBar(ft.Text(lang_load(f"record_page_success_message", date=todaysDate)), bgcolor=ft.Colors.GREEN_ACCENT))
         except Exception as e:
             print(f"Error writing to file: {e}")
-            page.open(ft.SnackBar(ft.Text(lang_load("record_page_error_message")), bgcolor=ft.colors.RED_ACCENT))
+            page.open(ft.SnackBar(ft.Text(lang_load("record_page_error_message")), bgcolor=ft.Colors.RED_ACCENT))
             
     navigator = BackToHome(lang_load("record_page_title"), page)
 
@@ -91,8 +91,8 @@ def record_page(page: ft.Page) -> ft.View:
         ft.Row([
             ft.Container(
                 content=ft.IconButton(
-                    icon_color=ft.colors.GREEN_ACCENT,
-                    icon=ft.icons.PLAY_CIRCLE,
+                    icon_color=ft.Colors.GREEN_ACCENT,
+                    icon=ft.Icons.PLAY_CIRCLE,
                     width=45,
                     height=45,
                     on_click=lambda e: start_recording()
@@ -100,8 +100,8 @@ def record_page(page: ft.Page) -> ft.View:
             ),
             ft.Container(
                 content=ft.IconButton(
-                    icon_color=ft.colors.YELLOW_ACCENT,
-                    icon=ft.icons.STOP_CIRCLE,
+                    icon_color=ft.Colors.YELLOW_ACCENT,
+                    icon=ft.Icons.STOP_CIRCLE,
                     width=45,
                     height=45,
                     on_click=lambda e: stop_recording()
@@ -109,8 +109,8 @@ def record_page(page: ft.Page) -> ft.View:
             ),
             ft.Container(
                 content=ft.IconButton(
-                    icon_color=ft.colors.RED_ACCENT,
-                    icon=ft.icons.DELETE_OUTLINE_ROUNDED,
+                    icon_color=ft.Colors.RED_ACCENT,
+                    icon=ft.Icons.DELETE_OUTLINE_ROUNDED,
                     width=45,
                     height=45,
                     on_click=lambda e: delete_recording()
@@ -128,7 +128,7 @@ def record_page(page: ft.Page) -> ft.View:
                     ft.TextField(
                         width=200,
                         text_align=ft.TextAlign.LEFT,
-                        color=ft.colors.WHITE,
+                        color=ft.Colors.WHITE,
                         border_color=get_time_based_color(),
                         label_style=ft.TextStyle(color=get_time_based_color()),
                         on_change=on_change_activity

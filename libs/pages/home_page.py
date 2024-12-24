@@ -7,7 +7,7 @@ def home_page(page: ft.Page) -> ft.View:
     config = load_config()
     folder_path = config.get("folder_path")
 
-    typewriter = TypewriterText(25, ft.FontWeight.BOLD, page)
+    typewriter = TypewriterText(25, ft.FontWeight.BOLD, page, "CaskaydiaCove")
     typewriter.start_animation(lang_load("home_page_title"))
 
     time_color = get_time_based_color()
@@ -18,7 +18,7 @@ def home_page(page: ft.Page) -> ft.View:
         gradient=ft.LinearGradient(
             begin=ft.alignment.top_center,
             end=ft.alignment.bottom_center,
-            colors=[time_color, ft.colors.TRANSPARENT],
+            colors=[time_color, ft.Colors.TRANSPARENT],
             stops=[0.0, 0.7]
         ),
         opacity=0.4,
@@ -51,15 +51,12 @@ def home_page(page: ft.Page) -> ft.View:
                     return lang_load("home_page_note_desc")
                 else:
                     return text["note"]
-                
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
+        except (FileNotFoundError, json.decoder.JSONDecodeError, TypeError):
             return lang_load("home_page_note_desc")
         
     def open_folder(path):
         if platform.system() == "Windows":
             os.startfile(path)
-        elif platform.system() == "Darwin":
-            subprocess.Popen(["open", path])
         elif platform.system() == "Linux":
             subprocess.Popen(["xdg-open", path])
         else:
@@ -70,7 +67,7 @@ def home_page(page: ft.Page) -> ft.View:
         controls=[
             ft.Container(
                 content=ft.IconButton(
-                    icon=ft.icons.SETTINGS,icon_color=ft.colors.WHITE,
+                    icon=ft.Icons.SETTINGS,icon_color=ft.Colors.WHITE,
                     on_click=lambda e: page.go("/settings"),
                 ),
                 alignment=ft.alignment.top_right,
@@ -95,7 +92,7 @@ def home_page(page: ft.Page) -> ft.View:
 
             ft.Container(
                 ft.Text(
-                    lang_load("home_page_date") + todaysDate,
+                    lang_load(f"home_page_date", date=todaysDate),
                     size=13,
                     weight=ft.FontWeight.W_600,
                     color=get_time_based_color()
@@ -117,12 +114,12 @@ def home_page(page: ft.Page) -> ft.View:
                                         ft.Container(
                                             ft.Text(lang_load("home_page_note_title"),color=get_time_based_color(), weight=ft.FontWeight.BOLD),
                                             alignment=ft.alignment.top_left,
-                                            padding=ft.padding.only(top=15,left=-10)
+                                            padding=ft.padding.only(top=15,left=10)
                                         ),
                                         ft.Container(
-                                            ft.Text(get_note_text(), color=ft.colors.WHITE70, max_lines=2, overflow="ellipsis"),
+                                            ft.Text(get_note_text(), color=ft.Colors.WHITE70, max_lines=2, overflow="ellipsis"),
                                             alignment=ft.alignment.center_left,
-                                            padding=ft.padding.only(left=-10,top=-7),
+                                            padding=ft.padding.only(left=10,top=-7),
                                         )
                                     ]),
                                     on_click=lambda _: page.go("/note"),
@@ -148,21 +145,21 @@ def home_page(page: ft.Page) -> ft.View:
                                 ft.ElevatedButton(
                                     height=100,
                                     width=100,
-                                    content=ft.Image(src="assets/icons/copy-writing.png", color=get_time_based_color(), width=32, height=32),
+                                    content=ft.Image(src="icons/copy-writing.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                     on_click=lambda e: page.go("/write")
                                 ),
                                 ft.ElevatedButton(
                                     height=100,
                                     width=100,
-                                    content=ft.Image(src="assets/icons/calendar.png", color=get_time_based_color(), width=32, height=32),
+                                    content=ft.Image(src="icons/calendar.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                     on_click=lambda e: e
                                 ),
                                 ft.ElevatedButton(
                                     height=100,
                                     width=100,
-                                    content=ft.Image(src="assets/icons/chart.png", color=get_time_based_color(), width=32, height=32),
+                                    content=ft.Image(src="icons/chart.png", color=get_time_based_color(), width=32, height=32),
                                     on_click=lambda e: page.go("/analyze"),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
                                 )
@@ -179,20 +176,20 @@ def home_page(page: ft.Page) -> ft.View:
                                 ft.ElevatedButton(
                                     height=100,
                                     width=100,
-                                    content=ft.Image(src="assets/icons/neuron.png", color=get_time_based_color(), width=32, height=32),
+                                    content=ft.Image(src="icons/neuron.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10))
                                 ),
                                 ft.ElevatedButton(
                                     height=100,
                                     width=100,
-                                    content=ft.Image(src="assets/icons/checklist.png", color=get_time_based_color(), width=32, height=32),
+                                    content=ft.Image(src="icons/checklist.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                     on_click=lambda _: page.go("/todo")
                                 ),
                                 ft.ElevatedButton(
                                     height=100,
                                     width=100,
-                                    content=ft.Image(src="assets/icons/folder.png", color=get_time_based_color(), width=32, height=32),
+                                    content=ft.Image(src="icons/folder.png", color=get_time_based_color(), width=32, height=32),
                                     style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
                                     on_click=lambda e: open_folder(folder_path)
                                 )

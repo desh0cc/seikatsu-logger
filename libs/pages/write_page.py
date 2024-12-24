@@ -31,7 +31,7 @@ def write_page(page: ft.Page):
         try:
             if not all([selected_date.data, start_time.data, end_time.data, activity_input.data]):
                 page.open(
-                    ft.SnackBar(content=ft.Text(lang_load("write_page_error_message")), bgcolor=ft.colors.ERROR)
+                    ft.SnackBar(content=ft.Text(lang_load("write_page_error_message")), bgcolor=ft.Colors.ERROR)
                 )
                 return
 
@@ -40,7 +40,7 @@ def write_page(page: ft.Page):
             start_datetime = datetime.combine(selected_date.data, start_time.data)
             end_datetime = datetime.combine(selected_date.data, end_time.data)
             duration = end_datetime - start_datetime
-            file_path = os.path.join(folder_path, f"{file_date}.json")
+            file_path = os.path.join(folder_path, "logs", f"{file_date}.json")
 
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
@@ -63,7 +63,7 @@ def write_page(page: ft.Page):
                 json.dump(data, f, ensure_ascii=False, indent=4)
 
             page.open(
-                ft.SnackBar(content=ft.Text(lang_load("write_page_success_message")), bgcolor=ft.colors.GREEN)
+                ft.SnackBar(content=ft.Text(lang_load("write_page_success_message")), bgcolor=ft.Colors.GREEN)
             )
 
             activity_input.value = ""
@@ -77,7 +77,7 @@ def write_page(page: ft.Page):
 
         except Exception as e:
             page.open(
-                ft.SnackBar(content=ft.Text(f"Error: {str(e)}"), bgcolor=ft.colors.ERROR)
+                ft.SnackBar(content=ft.Text(f"Error: {str(e)}"), bgcolor=ft.Colors.ERROR)
             )
 
     selected_date = ft.Text("")
@@ -96,7 +96,7 @@ def write_page(page: ft.Page):
                     ft.Container(ft.Text(lang_load("write_page_calendar_title"), size=16),alignment=ft.alignment.center),
                     ft.Container(ft.ElevatedButton(
                         text=lang_load("write_page_button_calendar"), color=get_time_based_color(),
-                        icon=ft.icons.CALENDAR_MONTH,
+                        icon=ft.Icons.CALENDAR_MONTH,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: page.open(
                             ft.DatePicker(
@@ -116,7 +116,7 @@ def write_page(page: ft.Page):
                         width=200,
                         text_align=ft.TextAlign.LEFT,
                         label=lang_load("write_page_activity_input_label"),
-                        color=ft.colors.WHITE,
+                        color=ft.Colors.WHITE,
                         border_color=get_time_based_color(),
                         label_style=ft.TextStyle(color=get_time_based_color()),
                         on_change=handle_activity_change
@@ -131,7 +131,7 @@ def write_page(page: ft.Page):
                     ft.Container(ft.Text(lang_load("write_page_start_time_title"), size=16), alignment=ft.alignment.center),
                     ft.Container(ft.ElevatedButton(
                         text=lang_load("write_page_time_button"),color=get_time_based_color(),
-                        icon=ft.icons.ACCESS_TIME,
+                        icon=ft.Icons.ACCESS_TIME,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: page.open(
                             ft.TimePicker(
@@ -150,7 +150,7 @@ def write_page(page: ft.Page):
                     ft.Container(ft.Text(lang_load("write_page_start_time_title"), size=16), alignment=ft.alignment.center),
                     ft.Container(ft.ElevatedButton(
                         text=lang_load("write_page_time_button"),color=get_time_based_color(),
-                        icon=ft.icons.ACCESS_TIME,
+                        icon=ft.Icons.ACCESS_TIME,
                         icon_color=get_time_based_color(),
                         on_click=lambda e: page.open(
                             ft.TimePicker(
