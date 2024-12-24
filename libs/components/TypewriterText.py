@@ -2,10 +2,11 @@ import flet as ft, time
 from threading import Thread
 
 class TypewriterText:
-    def __init__(self, size: int, weight: ft.FontWeight, page: ft.Page):
+    def __init__(self, size: int, weight: ft.FontWeight, page: ft.Page, font_name=None):
         self.text = ft.Text(
             size=size,
-            weight=weight
+            weight=weight,
+            font_family=font_name
         )
         self.page = page
         self.animation_thread = None
