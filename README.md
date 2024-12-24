@@ -18,15 +18,15 @@ Manual logging
 
 - [x] Adding, Recording, editing time activity log
 - [ ] Time overlapping check
-- [ ] Note logging
+- [x] Note logging
 
 Automatic logging activity
 - [ ] Auto log file
 - [ ] Activity AI classification
 
-AI
+AI Models
 
-- [ ] AI models integration
+- [x] Ollama models inregration
 
 ## Installation
 ## Usage
