@@ -1,7 +1,6 @@
 import json, os
 from datetime import datetime
 
-
 # DATE
 
 todaysDate = datetime.today().strftime("%Y-%m-%d")
@@ -28,7 +27,6 @@ def load_config():
     except (FileNotFoundError, json.decoder.JSONDecodeError):
         return DEFAULT_CONFIG
     
-
 # LOGS
 
 def load_log(file):
@@ -56,10 +54,10 @@ def if_intersect(new_start, new_end, existing_logs) -> bool:
 
     return False
 
-def duration_to_seconds(duration: str) -> str:
+def duration_to_seconds(duration: str) -> int:
     """Перевод часу в секунди"""
     times = duration.split(":")
-    return str((int(times[0]) * 3600) + (int(times[1]) * 60) + int(times[2]))
+    return (int(times[0]) * 3600) + (int(times[1]) * 60) + int(times[2])
         
 # LANGUAGE LOADING
 
@@ -81,7 +79,6 @@ def lang_load(key, **kwargs):
     except (FileNotFoundError, json.JSONDecodeError):
         print(f"Translations file '{lang_file}' not found")
         return key
-
 
 # REACTIVE TIME
 
