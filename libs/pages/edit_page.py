@@ -72,11 +72,12 @@ def edit_page(page: ft.Page):
         if current_start and current_end:
             try:
                 duration = datetime.strptime(current_end, "%H:%M:%S") - datetime.strptime(current_start, "%H:%M:%S")
-                if duration_to_seconds(duration) <= 0:
+                if duration_to_seconds(str(duration)) <= 0:
                     raise NotImplementedError
                 data[activity]["duration"] = str(duration)
             except Exception as e:
-                page.open(ft.SnackBar(ft.Text(f"Помилка: {e}"), bgcolor=ft.colors.RED_ACCENT))
+                page.open(ft.SnackBar(ft.Text(f"Помилка: {e}"), bgcolor=ft.Colors.RED_ACCENT))
+                print(e)
                 return
 
         with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
