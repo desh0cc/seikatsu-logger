@@ -15,7 +15,7 @@ def main(page: ft.Page):
     page.window.height = 720
     page.window.width = 480
 
-    page.window.icon = "assets/icon.png"
+    page.window.icon = "icon.png"
 
     page.window.resizable = True
     page.theme_mode = ft.ThemeMode.SYSTEM
@@ -47,6 +47,7 @@ def main(page: ft.Page):
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
+
     page.go(page.route)
 
 if __name__ == "__main__":
