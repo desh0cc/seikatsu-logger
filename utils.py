@@ -1,17 +1,28 @@
 import json, os
+
 from datetime import datetime
+from ollama import list
 
 # DATE
 
 todaysDate = datetime.today().strftime("%Y-%m-%d")
 
+# MODEL LOADING
+
+def get_model_list():
+    model_list = list()
+    models = [model.model for model in model_list.models]
+    return models
+
 # CONFIG
+
+app_directory = os.path.dirname(os.path.abspath(__file__))
 
 CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
-    "folder_path": "/logs",
-    "language": "en_US",
-    "model": ""
+    "folder_path": os.path.join(app_directory, "logs"),
+    "language": "en_UK.json",
+    "model": get_model_list()[0]
 }
 
 def save_config(config_data):
@@ -31,14 +42,17 @@ def load_config():
 
 def load_log(file):
     """Загрузка логів"""
+
     config = load_config()
     folder_path = config.get("folder_path")
+    log_path = os.path.join(folder_path, "logs", str(file))
+
     try:
-        with open(f"{folder_path}\\logs\\{file}", "r", encoding="utf-8") as f:
+        with open(log_path, "r", encoding="utf-8") as f:
             data = json.load(f)
             return data
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(e)
+        return None
 
 def if_intersect(new_start, new_end, existing_logs) -> bool:
     """Перевірка на стик часу логів"""
