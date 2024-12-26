@@ -54,6 +54,9 @@ def edit_page(page: ft.Page):
 
         if not if_intersect(start_time, end_time, data):
             pass
+        else:
+            page.open(ft.SnackBar(ft.Text("Час не має пересікатися з іншими активностями"), bgcolor=ft.Colors.RED_ACCENT))
+            return
 
         if activity not in data:
             page.open(ft.SnackBar(ft.Text(lang_load("edit_page_error_activity_not_found")), bgcolor=ft.Colors.RED_ACCENT))
@@ -73,14 +76,14 @@ def edit_page(page: ft.Page):
             try:
                 duration = datetime.strptime(current_end, "%H:%M:%S") - datetime.strptime(current_start, "%H:%M:%S")
                 if duration_to_seconds(str(duration)) <= 0:
-                    raise NotImplementedError
+                    raise ValueError
                 data[activity]["duration"] = str(duration)
             except Exception as e:
                 page.open(ft.SnackBar(ft.Text(f"Помилка: {e}"), bgcolor=ft.Colors.RED_ACCENT))
                 print(e)
                 return
 
-        with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
+        with open(f"{folder_path}\\logs\\{file}", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         
         page.open(ft.SnackBar(ft.Text(lang_load("edit_page_success_message", file=picked_file.data)), bgcolor=ft.Colors.GREEN_ACCENT))
@@ -91,7 +94,7 @@ def edit_page(page: ft.Page):
         if activity in data:
             data.pop(activity)
             
-            with open(f"{folder_path}\\{file}", "w", encoding="utf-8") as f:
+            with open(f"{folder_path}\\logs\\{file}", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
             
             page.open(ft.SnackBar(ft.Text(lang_load("edit_page_delete_success", activity=picked_act.data, file=picked_file.data)), bgcolor=ft.Colors.GREEN_ACCENT))
