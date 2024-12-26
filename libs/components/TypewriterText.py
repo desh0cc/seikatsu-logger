@@ -1,5 +1,7 @@
 import flet as ft, time
+
 from threading import Thread
+from utils import lang_load
 
 class TypewriterText:
     def __init__(self, size: int, weight: ft.FontWeight, page: ft.Page, font_name=None):
@@ -31,7 +33,7 @@ class TypewriterText:
         self.text.value = text
         self.page.update(self.text)
 
-    def animate_thinking(self, base_text="Thinking", delay=0.5):
+    def animate_thinking(self, base_text=lang_load("chat_page_ai_thinking"), delay=0.5):
         def thinking_animation():
             dots = ""
             while True:
