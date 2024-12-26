@@ -72,5 +72,8 @@
     "note_page_delete_success":"Нотатку видалено",
     "note_page_save_success": "Успішно записано",
     "chart_page_title": "Вивести графік",
-    "chart_page_button": "Вивести графік"
+    "chart_page_button": "Вивести графік",
+    "chat_page_title":"Чат",
+    "chat_page_tfield_hint":"Напишіть своє повідомлення...",
+    "chat_page_ai_thinking":"Думає"
 }

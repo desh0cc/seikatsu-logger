@@ -72,5 +72,8 @@
     "note_page_delete_success":"Note was deleted",
     "note_page_save_success": "Note was saved",
     "chart_page_title": "Analyze log",
-    "chart_page_button": "plot"
+    "chart_page_button": "plot",
+    "chat_page_title":"Chat",
+    "chat_page_tfield_hint":"Type your message...",
+    "chat_page_ai_thinking":"Thinking"
 }
