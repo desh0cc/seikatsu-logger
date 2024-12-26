@@ -5,20 +5,20 @@ from ollama import chat
 from libs.components.NavigationComp import BackToHome
 from libs.components.TypewriterText import TypewriterText
 
-from utils import get_time_based_color, load_config
+from utils import get_time_based_color, load_config, lang_load
 
 def chat_page(page: ft.Page) -> ft.View:
-    navigator = BackToHome("Чат", page)
+    navigator = BackToHome(lang_load("chat_page_title"), page)
 
     message_cont = ft.Column(controls=[], expand=True, scroll=ft.ScrollMode.ALWAYS)
 
     exact_moment = datetime.datetime.now().strftime("%H:%M")
 
     config = load_config()
-
+    
     textik = ft.TextField(
         value="",
-        hint_text="Type your message...",
+        hint_text=lang_load("chat_page_tfield_hint"),
         text_style=ft.TextStyle(
             color=ft.Colors.BLACK
         ),
@@ -36,31 +36,21 @@ def chat_page(page: ft.Page) -> ft.View:
 
     async def send_message():
         user_message = textik.value.strip()
-        max_width = 300 if len(user_message) > 30 else None
         if user_message:
+            exact_moment = datetime.datetime.now().strftime("%H:%M")
             animated_container = ft.Container(
                 content=ft.Column([
                     ft.Container(
-                        ft.Text(
-                            user_message,
-                            color=ft.Colors.WHITE,
-                            size=15,
-                            no_wrap=False
-                        ),
+                        ft.Text(user_message, color=ft.Colors.WHITE, size=15, no_wrap=False),
                         alignment=ft.alignment.center
                     ),
                     ft.Container(
-                        ft.Text(
-                            exact_moment,
-                            color=ft.Colors.with_opacity(0.4, "#FFFFFF"),
-                        ),
-                        alignment=ft.alignment.bottom_right,
-                        expand=1
+                        ft.Text(exact_moment, color=ft.Colors.with_opacity(0.4, "#FFFFFF")),
+                        alignment=ft.alignment.bottom_right
                     )
                 ]),
                 bgcolor=ft.Colors.GREY_800,
                 border_radius=15,
-                width=max_width,
                 padding=10,
                 opacity=0,
                 offset=ft.Offset(0, 0.2),
@@ -75,20 +65,18 @@ def chat_page(page: ft.Page) -> ft.View:
                 )
             )
             page.update()
-
+            
             await asyncio.sleep(0.05)
-
+            
             animated_container.opacity = 1
             animated_container.offset = ft.Offset(0, 0)
-
             textik.value = ""
-
+            page.update()
+            
             fetch_response(user_message)
-
             page.update()
         else:
             page.open(ft.SnackBar(ft.Text("Будь ласка напишіть щось!"), bgcolor=ft.Colors.RED_600))
-
 
     def fetch_response(user_message):
         stream = chat(
@@ -96,11 +84,10 @@ def chat_page(page: ft.Page) -> ft.View:
             messages=[{'role': 'user', 'content': user_message}],
             stream=True
         )
-
+        
         response_text = TypewriterText(15, ft.FontWeight.NORMAL, page)
-
         response_text.animate_thinking()
-
+        
         response_container = ft.Container(
             content=response_text.text,
             bgcolor=get_time_based_color(),
@@ -112,7 +99,7 @@ def chat_page(page: ft.Page) -> ft.View:
             animate_opacity=ft.animation.Animation(300, curve=ft.AnimationCurve.EASE_IN_OUT),
             animate_offset=ft.animation.Animation(300, curve=ft.AnimationCurve.EASE_IN_OUT)
         )
-
+        
         message_cont.controls.append(
             ft.Row(
                 controls=[response_container],
@@ -121,24 +108,25 @@ def chat_page(page: ft.Page) -> ft.View:
         )
         
         page.update()
-
+        
         time.sleep(0.5)
-
+        
         response_container.opacity = 1
         response_container.offset = ft.Offset(0, 0)
-
+        
         page.update()
-
+        
         full_message = ""
         for chunk in stream:
             full_message += chunk['message']['content']
-
+        
         response_container.width = 300 if len(full_message) > 30 else None
-
+        
         full_msg_text = TypewriterText(size=15, weight=ft.FontWeight.NORMAL, page=page)
         response_container.content = full_msg_text.text
-
+        
         full_msg_text.start_animation(full_message)
+
 
     return ft.View(
         route="/chat",
