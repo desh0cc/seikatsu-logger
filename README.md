@@ -17,7 +17,7 @@ Activity logger built with flet.
 Manual logging
 
 - [x] Adding, Recording, editing time activity log
-- [ ] Time overlapping check
+- [x] Time overlapping check
 - [x] Note logging
 
 Automatic logging activity
