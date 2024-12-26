@@ -75,9 +75,9 @@ def write_page(page: ft.Page):
             end_time.data = None
             page.update()
 
-        except Exception as e:
+        except FileNotFoundError:
             page.open(
-                ft.SnackBar(content=ft.Text(f"Error: {str(e)}"), bgcolor=ft.Colors.ERROR)
+                ft.SnackBar(content=ft.Text(f"Error"), bgcolor=ft.Colors.ERROR)
             )
 
     selected_date = ft.Text("")
