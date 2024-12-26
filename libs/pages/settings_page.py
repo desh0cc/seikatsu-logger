@@ -1,8 +1,11 @@
-import flet as ft, json, os, subprocess
+import flet as ft, json, os
 from libs.components.NavigationComp import BackToHome
 
 def settings_page(page: ft.Page) -> ft.View:
-    from utils import get_time_based_color, load_config, lang_load
+    from utils import (
+        get_time_based_color, load_config, 
+        lang_load, get_model_list
+    )
 
     config = load_config()
 
@@ -22,12 +25,10 @@ def settings_page(page: ft.Page) -> ft.View:
         except Exception as e:
             print(f"Помилка: {e}")
             return []
-        
+
     def fetch_models():
         try:
-            result = subprocess.run(['ollama', 'list'], stdout=subprocess.PIPE)
-            models = result.stdout.decode('utf-8').splitlines()
-            models = [ft.dropdown.Option(line.split()[0]) for line in models[1:]]
+            models = [ft.dropdown.Option(model) for model in get_model_list()]
             return models
         except Exception as e:
             print(e)
@@ -176,13 +177,13 @@ def settings_page(page: ft.Page) -> ft.View:
                                     fill_color=ft.Colors.with_opacity(0.0, "#FFFFFF"),
                                     focused_bgcolor=ft.Colors.with_opacity(0.0, "#FFFFFF"),
                                     content_padding=ft.padding.symmetric(horizontal=0),
-                                    alignment=ft.alignment.center,
+                                    alignment=ft.alignment.center_left,
                                 ),
                                 expand=1,
                                 alignment=ft.alignment.center_right,
                                 padding=ft.padding.only(top=5,right=10)
                             )
-                        ]),
+                        ])
                     ),
                     ft.Container(
                         ft.Row([
@@ -192,11 +193,11 @@ def settings_page(page: ft.Page) -> ft.View:
                             ),
                             ft.Container(
                                 ft.Dropdown(
-                                    value=config.get("model"),
+                                    value=config.get("model") if config.get("model") != "" else get_model_list()[0],
                                     options=fetch_models(),
                                     on_change=on_model_change,
                                     text_size=15,
-                                    height=30,
+                                    height=25,
                                     width=90,
                                     bgcolor=None,
                                     border=None,
@@ -204,12 +205,13 @@ def settings_page(page: ft.Page) -> ft.View:
                                     fill_color=ft.Colors.with_opacity(0.0, "#FFFFFF"),
                                     focused_bgcolor=ft.Colors.with_opacity(0.0, "#FFFFFF"),
                                     content_padding=ft.padding.symmetric(horizontal=0),
-                                    alignment=ft.alignment.center,
+                                    alignment=ft.alignment.center_left,
+                                    padding=ft.padding.only(right=15),
                                 ),
-                                padding=ft.padding.only(top=5,right=10)
+                                padding=ft.padding.only(top=5,right=15)
                             )
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-                        padding=ft.padding.only(top=-15)
+                        padding=ft.margin.only(top=-15),
                     ),
                     ft.Container(
                         content=ft.Row([
@@ -243,7 +245,7 @@ def settings_page(page: ft.Page) -> ft.View:
                                 padding=ft.padding.only(right=10)
                             )
                         ]),
-                        padding=ft.padding.only(top=-15)
+                        padding=ft.margin.only(top=-10)
                     )
                 ]),
                 bgcolor=ft.Colors.with_opacity(0.4, "#333333"),
